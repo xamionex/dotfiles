@@ -85,14 +85,14 @@
       "key": "╔╾ 󱦟 OS Age ",
       "keyColor": "33",
       "format": "{result}",
-      "text": "oshowold.sh"
+      "text": "\"$HOME\"/.config/fastfetch/oshowold.sh"
     },
     {
       "type": "command",
       "key": "╠╾ 󱦟 OS Birthday ",
       "keyColor": "33",
       "format": "{result}",
-      "text": "oshowold.sh 2 2"
+      "text": "\"$HOME\"/.config/fastfetch/oshowold.sh 2 2"
     },
     {
       "type": "uptime",
