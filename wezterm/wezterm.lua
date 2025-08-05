@@ -101,6 +101,7 @@ config.font_size = 10.0
 -- Import actions
 local act = wezterm.action
 
+config.disable_default_key_bindings = true
 config.keys = {
     -- ▒░░ Tab Management ░░▒
     { key = "t", mods = "CTRL", action = act.SpawnTab("CurrentPaneDomain") },                -- New Tab
