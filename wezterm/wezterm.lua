@@ -78,7 +78,7 @@ config.window_padding = {
 
 config.initial_cols = 180                               -- Initial Width
 config.initial_rows = 50                                -- Initial Height
-config.window_background_opacity = 0.1                  -- Opacity of BG
+config.window_background_opacity = 0.75                 -- Opacity of BG
 config.kde_window_background_blur = true                -- Blur on KDE only, see wezterm wiki for others
 --window_decorations = "INTEGRATED_BUTTONS|RESIZE"
 config.warn_about_missing_glyphs = false                -- Don't send notifs when missing glyphs
@@ -103,8 +103,8 @@ local act = wezterm.action
 
 config.keys = {
     -- ▒░░ Tab Management ░░▒
-    { key = "t", mods = "CTRL", action = act.SpawnTab("CurrentPaneDomain") },         -- New Tab
-    { key = "q", mods = "CTRL", action = act.CloseCurrentTab { confirm = true } },    -- Close Tab (safer than closing pane)
+    { key = "t", mods = "CTRL", action = act.SpawnTab("CurrentPaneDomain") },                -- New Tab
+    { key = "q", mods = "CTRL|SHIFT", action = act.CloseCurrentTab { confirm = true } },     -- Close Tab (safer than closing pane), set to ctrl+shift because of micro doing the same key
     { key = "a", mods = "CTRL|SHIFT", action = act.ActivateTabRelative(-1) },                -- Previous Tab
     { key = "d", mods = "CTRL|SHIFT", action = act.ActivateTabRelative(1) },                 -- Next Tab
     { key = "w", mods = "CTRL|SHIFT", action = act.MoveTabRelative(-1) },                    -- Move Tab Left
