@@ -104,8 +104,8 @@ local act = wezterm.action
 config.disable_default_key_bindings = true
 config.keys = {
     -- ▒░░ Tab Management ░░▒
-    { key = "t", mods = "CTRL", action = act.SpawnTab("CurrentPaneDomain") },                -- New Tab
-    { key = "q", mods = "CTRL|SHIFT", action = act.CloseCurrentTab { confirm = true } },     -- Close Tab (safer than closing pane), set to ctrl+shift because of micro doing the same key
+    { key = "t", mods = "ALT", action = act.SpawnTab("CurrentPaneDomain") },                 -- New Tab
+    { key = "q", mods = "ALT", action = act.CloseCurrentPane { confirm = true } },           -- Close Pane, not ctrl+q because micro uses ctrl+q
     { key = "a", mods = "CTRL|SHIFT", action = act.ActivateTabRelative(-1) },                -- Previous Tab
     { key = "d", mods = "CTRL|SHIFT", action = act.ActivateTabRelative(1) },                 -- Next Tab
     { key = "w", mods = "CTRL|SHIFT", action = act.MoveTabRelative(-1) },                    -- Move Tab Left
@@ -118,8 +118,8 @@ config.keys = {
     { key = "s", mods = "ALT", action = act.ActivatePaneDirection 'Down' },
 
     -- ▒░░ Pane Splitting ░░▒
-    { key = "q", mods = "ALT", action = act.SplitVertical { domain = "CurrentPaneDomain" } },  -- Split Left/Right
-    { key = "e", mods = "ALT", action = act.SplitHorizontal { domain = "CurrentPaneDomain" } },-- Split Up/Down
+    { key = "r", mods = "CTRL|SHIFT", action = act.SplitVertical { domain = "CurrentPaneDomain" } },  -- Split Left/Right
+    { key = "f", mods = "CTRL|SHIFT", action = act.SplitHorizontal { domain = "CurrentPaneDomain" } },-- Split Up/Down
 
     -- ▒░░ Pane Management ░░▒
     { key = "z", mods = "CTRL|SHIFT|SUPER", action = act.TogglePaneZoomState },               -- Zoom Pane
