@@ -105,7 +105,7 @@ config.disable_default_key_bindings = true
 config.keys = {
     -- Tab Management
     { key = "t", mods = "ALT", action = act.SpawnTab("CurrentPaneDomain") },                 -- New Tab
-    { key = "q", mods = "ALT", action = act.CloseCurrentPane { confirm = true } },           -- Close Pane, not ctrl+q because micro uses ctrl+q
+    { key = "q", mods = "ALT", action = act.CloseCurrentPane { confirm = false } },          -- Close Pane, not ctrl+q because micro uses ctrl+q
     { key = "a", mods = "CTRL|SHIFT", action = act.ActivateTabRelative(-1) },                -- Previous Tab
     { key = "d", mods = "CTRL|SHIFT", action = act.ActivateTabRelative(1) },                 -- Next Tab
     { key = "w", mods = "CTRL|SHIFT", action = act.MoveTabRelative(-1) },                    -- Move Tab Left
@@ -173,8 +173,8 @@ config.keys = {
     { key = "t", mods = "SUPER", action = act.SpawnTab "CurrentPaneDomain" },
     { key = "t", mods = "CTRL|SHIFT", action = act.SpawnTab "CurrentPaneDomain" },
     { key = "T", mods = "SUPER|SHIFT", action = act.SpawnTab "DefaultDomain" },
-    { key = "w", mods = "SUPER", action = act.CloseCurrentTab { confirm = true } },
-    { key = "w", mods = "CTRL|SHIFT", action = act.CloseCurrentTab { confirm = true } },
+    { key = "w", mods = "SUPER", action = act.CloseCurrentTab { confirm = false } },
+    { key = "w", mods = "CTRL|SHIFT", action = act.CloseCurrentTab { confirm = false } },
 
     -- Activate tab
     { key = "1", mods = "SUPER", action = act.ActivateTab(0) },
