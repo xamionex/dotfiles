@@ -103,7 +103,7 @@ local act = wezterm.action
 
 config.disable_default_key_bindings = true
 config.keys = {
-    -- ▒░░ Tab Management ░░▒
+    -- Tab Management
     { key = "t", mods = "ALT", action = act.SpawnTab("CurrentPaneDomain") },                 -- New Tab
     { key = "q", mods = "ALT", action = act.CloseCurrentPane { confirm = true } },           -- Close Pane, not ctrl+q because micro uses ctrl+q
     { key = "a", mods = "CTRL|SHIFT", action = act.ActivateTabRelative(-1) },                -- Previous Tab
@@ -111,41 +111,122 @@ config.keys = {
     { key = "w", mods = "CTRL|SHIFT", action = act.MoveTabRelative(-1) },                    -- Move Tab Left
     { key = "s", mods = "CTRL|SHIFT", action = act.MoveTabRelative(1) },                     -- Move Tab Right
 
-    -- ▒░░ Pane Navigation ░░▒
+    -- Pane Navigation
     { key = "a", mods = "ALT", action = act.ActivatePaneDirection 'Left' },
     { key = "d", mods = "ALT", action = act.ActivatePaneDirection 'Right' },
     { key = "w", mods = "ALT", action = act.ActivatePaneDirection 'Up' },
     { key = "s", mods = "ALT", action = act.ActivatePaneDirection 'Down' },
 
-    -- ▒░░ Pane Splitting ░░▒
+    -- Pane Splitting
     { key = "r", mods = "CTRL|SHIFT", action = act.SplitVertical { domain = "CurrentPaneDomain" } },  -- Split Left/Right
     { key = "f", mods = "CTRL|SHIFT", action = act.SplitHorizontal { domain = "CurrentPaneDomain" } },-- Split Up/Down
 
-    -- ▒░░ Pane Management ░░▒
+    -- Pane Management
     { key = "z", mods = "CTRL|SHIFT|SUPER", action = act.TogglePaneZoomState },               -- Zoom Pane
     { key = "b", mods = "CTRL|SHIFT|SUPER", action = act.RotatePanes "CounterClockwise" },    -- Rotate Panes CCW
     { key = "n", mods = "CTRL|SHIFT|SUPER", action = act.RotatePanes "Clockwise" },           -- Rotate Panes CW
 
-    -- ▒░░ Pane Selection ░░▒
+    -- Pane Selection
     { key = "p", mods = "CTRL|SHIFT", action = act.PaneSelect },                              -- Interactive Pane Select
     { key = "o", mods = "CTRL|SHIFT", action = act.PaneSelect { mode = "SwapWithActive" } },  -- Swap Panes
 
-    -- ▒░░ Pane Resizing ░░▒
-    { key = "LeftArrow",  mods = "CTRL|SHIFT|SUPER", action = act.AdjustPaneSize { "Left", 1 } },
-    { key = "RightArrow", mods = "CTRL|SHIFT|SUPER", action = act.AdjustPaneSize { "Right", 1 } },
-    { key = "UpArrow",    mods = "CTRL|SHIFT|SUPER", action = act.AdjustPaneSize { "Up", 1 } },
-    { key = "DownArrow",  mods = "CTRL|SHIFT|SUPER", action = act.AdjustPaneSize { "Down", 1 } },
+    -- Pane Resizing
+    { key = "a", mods = "SHIFT|ALT", action = act.AdjustPaneSize { "Left", 1 } },
+    { key = "d", mods = "SHIFT|ALT", action = act.AdjustPaneSize { "Right", 1 } },
+    { key = "w", mods = "SHIFT|ALT", action = act.AdjustPaneSize { "Up", 1 } },
+    { key = "s", mods = "SHIFT|ALT", action = act.AdjustPaneSize { "Down", 1 } },
 
-    -- ▒░░ Scrolling ░░▒
+    -- Scrolling
     { key = "j", mods = "CTRL|SHIFT", action = act.ScrollByPage(1) },     -- Page Down
     { key = "k", mods = "CTRL|SHIFT", action = act.ScrollByPage(-1) },    -- Page Up
     { key = "g", mods = "CTRL|SHIFT", action = act.ScrollToTop },         -- Top
     { key = "e", mods = "CTRL|SHIFT", action = act.ScrollToBottom },      -- Bottom
 
-    -- ▒░░ Misc ░░▒
+    -- Misc
     { key = "d", mods = "CTRL|SHIFT", action = act.ShowLauncher },        -- Command Palette
     { key = ":", mods = "CTRL|SHIFT", action = act.ClearSelection },      -- Clear Selection
-    { key = "Enter", mods = "ALT", action = act.DisableDefaultAssignment } -- Prevent default Alt+Enter behavior
+
+    -- Clipboard copy/paste
+    { key = "c", mods = "SUPER", action = act.CopyTo "Clipboard" },
+    { key = "v", mods = "SUPER", action = act.PasteFrom "Clipboard" },
+    { key = "c", mods = "CTRL|SHIFT", action = act.CopyTo "Clipboard" },
+    { key = "v", mods = "CTRL|SHIFT", action = act.PasteFrom "Clipboard" },
+    { key = "Insert", mods = "CTRL", action = act.CopyTo "PrimarySelection" },
+    { key = "Insert", mods = "SHIFT", action = act.PasteFrom "PrimarySelection" },
+
+    -- Window management
+    { key = "m", mods = "SUPER", action = act.Hide },
+    { key = "h", mods = "SUPER", action = act.HideApplication }, -- macOS only
+    { key = "n", mods = "SUPER", action = act.SpawnWindow },
+    { key = "n", mods = "CTRL|SHIFT", action = act.SpawnWindow },
+    --{ key = "Enter", mods = "ALT", action = act.ToggleFullScreen },
+
+    -- Font size
+    { key = "-", mods = "SUPER", action = act.DecreaseFontSize },
+    { key = "-", mods = "CTRL", action = act.DecreaseFontSize },
+    { key = "=", mods = "SUPER", action = act.IncreaseFontSize },
+    { key = "=", mods = "CTRL", action = act.IncreaseFontSize },
+    { key = "0", mods = "SUPER", action = act.ResetFontSize },
+    { key = "0", mods = "CTRL", action = act.ResetFontSize },
+
+    -- Tabs
+    { key = "t", mods = "SUPER", action = act.SpawnTab "CurrentPaneDomain" },
+    { key = "t", mods = "CTRL|SHIFT", action = act.SpawnTab "CurrentPaneDomain" },
+    { key = "T", mods = "SUPER|SHIFT", action = act.SpawnTab "DefaultDomain" },
+    { key = "w", mods = "SUPER", action = act.CloseCurrentTab { confirm = true } },
+    { key = "w", mods = "CTRL|SHIFT", action = act.CloseCurrentTab { confirm = true } },
+
+    -- Activate tab
+    { key = "1", mods = "SUPER", action = act.ActivateTab(0) },
+    { key = "2", mods = "SUPER", action = act.ActivateTab(1) },
+    { key = "3", mods = "SUPER", action = act.ActivateTab(2) },
+    { key = "4", mods = "SUPER", action = act.ActivateTab(3) },
+    { key = "5", mods = "SUPER", action = act.ActivateTab(4) },
+    { key = "6", mods = "SUPER", action = act.ActivateTab(5) },
+    { key = "7", mods = "SUPER", action = act.ActivateTab(6) },
+    { key = "8", mods = "SUPER", action = act.ActivateTab(7) },
+    { key = "9", mods = "SUPER", action = act.ActivateTab(-1) },
+    { key = "1", mods = "CTRL|SHIFT", action = act.ActivateTab(0) },
+    { key = "2", mods = "CTRL|SHIFT", action = act.ActivateTab(1) },
+    { key = "3", mods = "CTRL|SHIFT", action = act.ActivateTab(2) },
+    { key = "4", mods = "CTRL|SHIFT", action = act.ActivateTab(3) },
+    { key = "5", mods = "CTRL|SHIFT", action = act.ActivateTab(4) },
+    { key = "6", mods = "CTRL|SHIFT", action = act.ActivateTab(5) },
+    { key = "7", mods = "CTRL|SHIFT", action = act.ActivateTab(6) },
+    { key = "8", mods = "CTRL|SHIFT", action = act.ActivateTab(7) },
+    { key = "9", mods = "CTRL|SHIFT", action = act.ActivateTab(-1) },
+
+    -- Navigate tabs
+    { key = "[", mods = "SUPER|SHIFT", action = act.ActivateTabRelative(-1) },
+    { key = "]", mods = "SUPER|SHIFT", action = act.ActivateTabRelative(1) },
+    { key = "Tab", mods = "CTRL|SHIFT", action = act.ActivateTabRelative(-1) },
+    { key = "Tab", mods = "CTRL", action = act.ActivateTabRelative(1) },
+    { key = "PageUp", mods = "CTRL", action = act.ActivateTabRelative(-1) },
+    { key = "PageDown", mods = "CTRL", action = act.ActivateTabRelative(1) },
+
+    -- Move tabs
+    { key = "PageUp", mods = "CTRL|SHIFT", action = act.MoveTabRelative(-1) },
+    { key = "PageDown", mods = "CTRL|SHIFT", action = act.MoveTabRelative(1) },
+
+    -- Scroll
+    { key = "PageUp", mods = "SHIFT", action = act.ScrollByPage(-1) },
+    { key = "PageDown", mods = "SHIFT", action = act.ScrollByPage(1) },
+
+    -- Misc
+    { key = "r", mods = "SUPER", action = act.ReloadConfiguration },
+    { key = "R", mods = "CTRL|SHIFT", action = act.ReloadConfiguration },
+    { key = "k", mods = "SUPER", action = act.ClearScrollback "ScrollbackOnly" },
+    { key = "K", mods = "CTRL|SHIFT", action = act.ClearScrollback "ScrollbackOnly" },
+    { key = "L", mods = "CTRL|SHIFT", action = act.ShowDebugOverlay },
+    { key = "P", mods = "CTRL|SHIFT", action = act.ActivateCommandPalette },
+    { key = "U", mods = "CTRL|SHIFT", action = act.CharSelect },
+    { key = "f", mods = "SUPER", action = act.Search { CaseSensitiveString = "" } },
+    { key = "F", mods = "CTRL|SHIFT", action = act.Search { CaseSensitiveString = "" } },
+    { key = "X", mods = "CTRL|SHIFT", action = act.ActivateCopyMode },
+    { key = "Space", mods = "CTRL|SHIFT", action = act.QuickSelect },
+
+    -- Pane zoom
+    { key = "Z", mods = "CTRL|SHIFT", action = act.TogglePaneZoomState },
 }
 
 config.enable_scroll_bar = true
