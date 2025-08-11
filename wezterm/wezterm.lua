@@ -5,22 +5,35 @@ local gpus = wezterm.gui.enumerate_gpus()
 
 config.term = 'wezterm'
 
--- Utility to extract RGB triplet from kdeglobals
+-- Utility to extract RGB triplet (decimal or hex) from kdeglobals
 local function get_kde_rgb(section, key)
-  local cmd = string.format([[awk '/\[%s\]/ {f=1; next} /^\[/ {f=0} f && /^%s=/' ~/.config/kdeglobals]], section, key)
+  local cmd = string.format(
+    [[awk '/\[%s\]/ {f=1; next} /^\[/ {f=0} f && /^%s=/' ~/.config/kdeglobals]],
+    section, key
+  )
   local pipe = io.popen(cmd)
   if not pipe then return nil end
-  local line = pipe:read("*a")
+  local line = pipe:read("*a"):gsub("%s+", "") -- remove whitespace
   pipe:close()
+
+  -- Match decimal triplet: R,G,B
   local r, g, b = line:match("=(%d+),(%d+),(%d+)")
   if r and g and b then
     return string.format("#%02x%02x%02x", tonumber(r), tonumber(g), tonumber(b))
   end
+
+  -- Match hex: #RRGGBB or RRGGBB
+  local hex = line:match("=#+(%x%x%x%x%x%x)") or line:match("=(%x%x%x%x%x%x)")
+  if hex then
+    return "#" .. hex:lower()
+  end
+
+  return nil
 end
 
 -- Extract KDE colors with fallbacks
-local bg_color     = get_kde_rgb("Colors:Window", "BackgroundNormal") or "#1e1e2e"
-local accent_color = get_kde_rgb("General", "AccentColor") or "#ff5555"
+local bg_color     = get_kde_rgb("Colors:Window", "BackgroundNormal") or "#555555"
+local accent_color = get_kde_rgb("General", "AccentColor") or "#555555"
 
 -- Simple function to lighten/darken hex color
 local function adjust_brightness(hex, factor)
