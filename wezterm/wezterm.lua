@@ -214,14 +214,14 @@ config.keys = {
 
     -- Misc
     { key = "r", mods = "SUPER", action = act.ReloadConfiguration },
-    { key = "R", mods = "CTRL|SHIFT", action = act.ReloadConfiguration },
+    --{ key = "R", mods = "CTRL|SHIFT", action = act.ReloadConfiguration },
     { key = "k", mods = "SUPER", action = act.ClearScrollback "ScrollbackOnly" },
     { key = "K", mods = "CTRL|SHIFT", action = act.ClearScrollback "ScrollbackOnly" },
     { key = "L", mods = "CTRL|SHIFT", action = act.ShowDebugOverlay },
     { key = "P", mods = "CTRL|SHIFT", action = act.ActivateCommandPalette },
     { key = "U", mods = "CTRL|SHIFT", action = act.CharSelect },
     { key = "f", mods = "SUPER", action = act.Search { CaseSensitiveString = "" } },
-    { key = "F", mods = "CTRL|SHIFT", action = act.Search { CaseSensitiveString = "" } },
+    --{ key = "F", mods = "CTRL|SHIFT", action = act.Search { CaseSensitiveString = "" } },
     { key = "X", mods = "CTRL|SHIFT", action = act.ActivateCopyMode },
     { key = "Space", mods = "CTRL|SHIFT", action = act.QuickSelect },
 
