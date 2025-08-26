@@ -47,8 +47,10 @@ end
 
 local inactive_bg = adjust_brightness(bg_color, 0.85)
 local hover_bg    = adjust_brightness(bg_color, 1.1)
-local fg_normal   = "#cdd6f4"
-local fg_subtle   = "#a6adc8"
+local fg_normal = get_kde_rgb("Colors:Window", "ForegroundNormal") or "#cdd6f4"
+local fg_subtle = get_kde_rgb("Colors:Window", "ForegroundInactive")
+               or get_kde_rgb("Colors:Window", "ForegroundDisabled")
+               or "#a6adc8"
 
 config.colors = {
   foreground = fg_normal,
@@ -59,7 +61,7 @@ config.colors = {
   tab_bar = {
     active_tab = {
       bg_color = accent_color,
-      fg_color = "#ffffff", -- Ensure contrast
+      fg_color = fg_normal,
       intensity = "Bold",
     },
     inactive_tab = {
@@ -99,7 +101,7 @@ config.warn_about_missing_glyphs = false                -- Don't send notifs whe
 -- Tab bar configuration
 config.enable_tab_bar = true
 config.use_fancy_tab_bar = false
-config.hide_tab_bar_if_only_one_tab = true
+config.hide_tab_bar_if_only_one_tab = false
 config.tab_max_width = 32                   -- limit tab width
 config.tab_bar_at_bottom = false
 
@@ -272,5 +274,71 @@ for _, gpu in ipairs(wezterm.gui.enumerate_gpus()) do
         config.front_end = "OpenGL"
     end
 end
+
+-- PLUGINS ----------------------------------------------------
+-- TABBAR
+local tabline = wezterm.plugin.require("https://github.com/michaelbrusegard/tabline.wez")
+tabline.setup({
+  options = {
+    icons_enabled = true,
+    theme_overrides = {
+      normal_mode = {
+        a = { fg = bg_color, bg = accent_color },
+        b = { fg = accent_color, bg = inactive_bg },
+        c = { fg = fg_normal, bg = bg_color },
+      },
+      copy_mode = {
+        a = { fg = bg_color, bg = accent_color },
+        b = { fg = accent_color, bg = inactive_bg },
+        c = { fg = fg_normal, bg = bg_color },
+      },
+      search_mode = {
+        a = { fg = bg_color, bg = accent_color },
+        b = { fg = accent_color, bg = inactive_bg },
+        c = { fg = fg_normal, bg = bg_color },
+      },
+      window_mode = {
+        a = { fg = bg_color, bg = accent_color },
+        b = { fg = accent_color, bg = inactive_bg },
+        c = { fg = fg_normal, bg = bg_color },
+      },
+      tab = {
+        active =   { fg = fg_normal, bg = accent_color },
+        inactive = { fg = fg_subtle, bg = inactive_bg },
+        inactive_hover = { fg = fg_normal, bg = hover_bg },
+      }
+    },
+    tabs_enabled = true,
+    section_separators = {
+      left = wezterm.nerdfonts.pl_left_hard_divider,
+      right = wezterm.nerdfonts.pl_right_hard_divider,
+    },
+    component_separators = {
+      left = wezterm.nerdfonts.pl_left_soft_divider,
+      right = wezterm.nerdfonts.pl_right_soft_divider,
+    },
+    tab_separators = {
+      left = wezterm.nerdfonts.pl_left_hard_divider,
+      right = wezterm.nerdfonts.pl_right_hard_divider,
+    },
+  },
+  sections = {
+    tabline_a = { 'mode' },
+    tabline_b = { 'workspace' },
+    tabline_c = { ' ' },
+    tab_active = {
+      'index',
+      { 'parent', padding = 0 },
+      '/',
+      { 'cwd', padding = { left = 0, right = 1 } },
+      { 'zoomed', padding = 0 },
+    },
+    tab_inactive = { 'index', { 'process', padding = { left = 0, right = 1 } } },
+    tabline_x = { 'ram', 'cpu' },
+    tabline_y = { 'datetime', 'battery' },
+    tabline_z = { 'domain' },
+  },
+  extensions = {},
+})
 
 return config
