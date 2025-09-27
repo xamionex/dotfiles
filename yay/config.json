@@ -1,6 +1,6 @@
 {
-	"aururl": "https://aur.petar.cc",
-	"aurrpcurl": "https://aur.petar.cc/rpc?",
+	"aururl": "https://aur.archlinux.org",
+	"aurrpcurl": "https://aur.archlinux.org/rpc?",
 	"buildDir": "/home/petar/.cache/yay",
 	"editor": "",
 	"editorflags": "",
