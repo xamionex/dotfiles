@@ -37,7 +37,7 @@
 	"pgpfetch": true,
 	"cleanmenu": false,
 	"diffmenu": false,
-	"editmenu": false,
+	"editmenu": true,
 	"combinedupgrade": true,
 	"useask": false,
 	"batchinstall": false,
