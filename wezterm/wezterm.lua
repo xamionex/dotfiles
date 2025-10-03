@@ -31,9 +31,29 @@ local function get_kde_rgb(section, key)
   return nil
 end
 
--- Extract KDE colors with fallbacks
-local bg_color     = get_kde_rgb("Colors:Window", "BackgroundNormal") or "#555555"
-local accent_color = get_kde_rgb("General", "AccentColor") or "#555555"
+-- Utility to extract color from ~/.config/wezterm/theme (check example file to make your own)
+local function get_wezterm_theme_color(section, key)
+  local theme_file = os.getenv("HOME") .. "/.config/wezterm/theme"
+  local file = io.open(theme_file, "r")
+  if not file then return nil end
+
+  local current_section
+  for line in file:lines() do
+    local s = line:match("^%s*%[(.-)%]%s*$")
+    if s then
+      current_section = s
+    else
+      local k, v = line:match("^%s*([%w_]+)%s*=%s*(%S+)%s*$")
+      if k and v and current_section == section and k == key then
+        file:close()
+        return v
+      end
+    end
+  end
+
+  file:close()
+  return nil
+end
 
 -- Simple function to lighten/darken hex color
 local function adjust_brightness(hex, factor)
@@ -45,12 +65,22 @@ local function adjust_brightness(hex, factor)
   return string.format("#%02x%02x%02x", r, g, b)
 end
 
+-- General fallback resolver
+local function resolve_color(section, key, static_fallback)
+  return get_kde_rgb(section, key)
+      or get_wezterm_theme_color(section, key)
+      or static_fallback
+end
+
+-- Extract colors with layered fallbacks
+local fg_normal    = resolve_color("Colors:Window", "ForegroundNormal",   "#cdd6f4")
+local fg_subtle    = resolve_color("Colors:Window", "ForegroundInactive", "#a6adc8")
+local bg_color     = resolve_color("Colors:Window", "BackgroundNormal",   "#000000")
+local accent_color = resolve_color("General",       "AccentColor",        "#AAAAAA")
+
+-- Derived colors
 local inactive_bg = adjust_brightness(bg_color, 0.85)
 local hover_bg    = adjust_brightness(bg_color, 1.1)
-local fg_normal = get_kde_rgb("Colors:Window", "ForegroundNormal") or "#cdd6f4"
-local fg_subtle = get_kde_rgb("Colors:Window", "ForegroundInactive")
-               or get_kde_rgb("Colors:Window", "ForegroundDisabled")
-               or "#a6adc8"
 
 config.colors = {
   foreground = fg_normal,
