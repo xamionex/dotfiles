@@ -90,7 +90,7 @@ config.colors = {
 
   tab_bar = {
     active_tab = {
-      bg_color = accent_color,
+      bg_color = bg_color,
       fg_color = fg_normal,
       intensity = "Bold",
     },
@@ -333,9 +333,9 @@ tabline.setup({
         c = { fg = fg_normal, bg = bg_color },
       },
       tab = {
-        active =   { fg = fg_normal, bg = accent_color },
-        inactive = { fg = fg_subtle, bg = inactive_bg },
-        inactive_hover = { fg = fg_normal, bg = hover_bg },
+        active =   { fg = bg_color, bg = accent_color },
+        inactive = { fg = accent_color, bg = inactive_bg },
+        inactive_hover = { fg = fg_normal, bg = bg_color },
       }
     },
     tabs_enabled = true,
