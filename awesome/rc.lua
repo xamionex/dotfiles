@@ -160,8 +160,8 @@ mykeyboardlayout = awful.widget.keyboardlayout()
 -- Create a textclock widget
 mytextclock = wibox.widget.textclock()
 --mympdwidget = require("mpc_widget")
---mycpuwidget = cpu_widget()
---myramwidget = ram_widget()
+mycpuwidget = cpu_widget()
+myramwidget = ram_widget()
 --myfswidget = fs_widget({
 --	mounts = {
 --		"/",
@@ -682,8 +682,8 @@ awful.screen.connect_for_each_screen(function(s)
         s.mytasklist, -- Middle widget
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
-            --mycpuwidget,
-            --myramwidget,
+            mycpuwidget,
+            myramwidget,
             --myfswidget,
             mykeyboardlayout,
             wibox.widget.systray(),
