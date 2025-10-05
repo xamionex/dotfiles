@@ -4,6 +4,7 @@ local home = os.getenv("HOME")
 
 local auto_start = {
 	"picom",
+	"numlockx on",
 	--"nvidia-settings -l",
 	--"easyeffects --gapplication-service",
 	--"aria2c --daemon --enable-rpc",
