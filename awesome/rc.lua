@@ -11,6 +11,7 @@ local wibox = require("wibox")
 -- Theme handling library
 local beautiful = require("beautiful")
 -- Notification library
+local dpi = require("beautiful.xresources").apply_dpi
 local naughty = require("naughty")
 local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup")
@@ -65,6 +66,11 @@ beautiful.init(gears.filesystem.get_configuration_dir() .. "theme.lua")
 terminal = "wezterm"
 editor = "micro"
 editor_cmd = terminal .. " -e " .. editor
+
+naughty.config.defaults.width = dpi(600)
+local notif_height = dpi(130)
+naughty.config.defaults.height = notif_height
+naughty.config.defaults.icon_size = notif_height * 0.9
 
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
