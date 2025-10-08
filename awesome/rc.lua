@@ -213,6 +213,31 @@ local tasklist_buttons = gears.table.join(
     end)
 )
 
+-- Function to get current volume as string
+local function notify_volume()
+    -- Use a shell command to get volume
+    awful.spawn.easy_async_with_shell("wpctl get-volume @DEFAULT_AUDIO_SINK@", function(stdout)
+        -- wpctl outputs like: "Volume: 0.50 [50%]"
+        -- Extract the percentage part using Lua pattern matching
+        local volume = stdout:match("(%d?%.?%d+)")
+        local muted = stdout:match(".*(%[MUTED%])") or ""
+        if volume then
+            local percent = math.floor(tonumber(volume) * 100)
+            naughty.notify({
+                preset = naughty.config.presets.info,
+                title = "Volume is set to:",
+                text = percent .. "% " .. muted,
+            })
+        --else
+        --    naughty.notify({
+        --        preset = naughty.config.presets.critical,
+        --        title = "Error",
+        --        text = "Could not get volume",
+        --    })
+        end
+    end)
+end
+
 -- {{{ Key bindings
 globalkeys = gears.table.join(
     awful.key({ modkey }, "s", hotkeys_popup.show_help, { description = "show help", group = "awesome" }),
@@ -250,6 +275,14 @@ globalkeys = gears.table.join(
             client.focus:raise()
         end
     end, { description = "go back", group = "client" }),
+    
+    awful.key({ }, "Print", function()
+        awful.spawn("screenshot.sh")
+    end, { description = "take screenshot", group = "launcher" }),
+
+    awful.key({ "Shift" }, "Print", function()
+        awful.spawn("screenshot.sh -f")
+    end, { description = "take screenshot", group = "launcher" }),
 
     -- Standard program
     awful.key({ modkey }, "Return", function()
@@ -327,11 +360,17 @@ globalkeys = gears.table.join(
     end, { description = "show the menubar", group = "launcher" }),
 
     awful.key({}, "XF86AudioRaiseVolume", function()
-        awful.spawn("mpc volume +1")
-    end, { description = "Raise Music volume by 1", group = "music" }),
+        awful.spawn("wpctl set-volume @DEFAULT_AUDIO_SINK@ 1%+")
+        notify_volume()
+    end, { description = "Raise Volume by 1", group = "music" }),
     awful.key({}, "XF86AudioLowerVolume", function()
-        awful.spawn("mpc volume -1")
-    end, { description = "Lower Music volume by 1", group = "music" }),
+        awful.spawn("wpctl set-volume @DEFAULT_AUDIO_SINK@ 1%-")
+        notify_volume()
+    end, { description = "Lower Volume by 1", group = "music" }),
+    awful.key({}, "XF86AudioMute", function()
+        awful.spawn("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle")
+        notify_volume()
+    end, { description = "Lower Volume by 1", group = "music" }),
 
     awful.key({}, "XF86AudioNext", function()
         awful.spawn({ "mpc", "next" })

@@ -9,7 +9,7 @@ local auto_start = {
 	--"easyeffects --gapplication-service",
 	--"aria2c --daemon --enable-rpc",
 	--"dispwin -d 1 " .. home .. '"/.color/Dell S2721DGF.icm"',
-	--"greenclip daemon > /dev/null",
+	"greenclip daemon > /dev/null",
 	--"xhidecursor",
 	--"rssguard",
 	--'"$HOME/.config/i3/Scripts/random-bg.sh"',
