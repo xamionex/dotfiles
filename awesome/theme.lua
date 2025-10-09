@@ -12,6 +12,8 @@ local dpi = xresources.apply_dpi
 local gears = require("gears")
 local themes_path = gears.filesystem.get_themes_dir()
 
+local widgets = require("widgets")
+local title_bars = require("title_bars")
 local theme = {}
 
 -- Pywal color variables
@@ -146,7 +148,7 @@ local function get_pywal_wallpaper()
     file:close()
     return wallpaper
   end
-  return themes_path .. "default/background.png"   -- fallback
+  return themes_path .. "default/background.png" -- fallback
 end
 
 theme.wallpaper = get_pywal_wallpaper()
@@ -210,6 +212,17 @@ function theme.update_pywal_colors()
   -- Re-apply the theme
   beautiful.init(gears.filesystem.get_configuration_dir() .. "theme.lua")
 
+  -- Update all clients' border colors
+  for _, c in ipairs(client.get()) do
+    if c.valid then
+      if c == client.focus then
+        c.border_color = theme.border_focus
+      else
+        c.border_color = theme.border_normal
+      end
+    end
+  end
+
   -- Update all screens
   for s in screen do
     -- Update wallpaper
@@ -219,9 +232,12 @@ function theme.update_pywal_colors()
 
     -- Update wibox
     if s.mywibox then
-      s.mywibox:setup(s.mywibox:get_children_by_id("main_container")[1].widget)
+      --s.mywibox:setup(s.mywibox:get_children_by_id("main_container")[1].widget)
+      widgets.reinitialize()
     end
   end
+
+  title_bars.refresh_all()
 end
 
 return theme

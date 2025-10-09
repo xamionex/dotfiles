@@ -81,7 +81,7 @@ end
 -- ==================================================
 
 gears.timer {
-  timeout = 5,   -- Rotate every X seconds
+  timeout = 10 * 60,   -- Rotate every X seconds
   autostart = true,
   call_now = true,
   callback = function()
