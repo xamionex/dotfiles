@@ -1,70 +1,114 @@
 ---------------------------
--- Default awesome theme --
+-- Pywal awesome theme --
 ---------------------------
 
-local theme_assets = require("beautiful.theme_assets")
-local xresources = require("beautiful.xresources")
+local awful = require("awful")
+local wibox = require("wibox")
+local beautiful = require("beautiful")
+local theme_assets = beautiful.theme_assets
+local xresources = beautiful.xresources
 local dpi = xresources.apply_dpi
 
-local gfs = require("gears.filesystem")
-local themes_path = gfs.get_themes_dir()
+local gears = require("gears")
+local themes_path = gears.filesystem.get_themes_dir()
 
 local theme = {}
 
-theme.font = "sans 8"
+-- Pywal color variables
+local pywal_cache_dir = os.getenv("HOME") .. "/.cache/wal"
 
-theme.bg_normal = "#222222"
-theme.bg_focus = "#535d6c"
-theme.bg_urgent = "#ff0000"
-theme.bg_minimize = "#444444"
+-- Function to read pywal colors
+local function read_pywal_colors()
+  local colors_file = pywal_cache_dir .. "/colors"
+  local file = io.open(colors_file, "r")
+
+  if not file then
+    -- Fallback colors if pywal isn't set up
+    return {
+      background = "#222222",
+      foreground = "#aaaaaa",
+      color0 = "#222222",
+      color1 = "#ff0000",
+      color2 = "#00ff00",
+      color3 = "#ffff00",
+      color4 = "#0000ff",
+      color5 = "#ff00ff",
+      color6 = "#00ffff",
+      color7 = "#aaaaaa",
+      color8 = "#444444",
+      color9 = "#ff4444",
+      color10 = "#44ff44",
+      color11 = "#ffff44",
+      color12 = "#4444ff",
+      color13 = "#ff44ff",
+      color14 = "#44ffff",
+      color15 = "#ffffff"
+    }
+  end
+
+  local colors = {}
+  for i = 0, 15 do
+    colors[i] = file:read("*l")
+  end
+  file:close()
+
+  return colors
+end
+
+-- Initialize colors from pywal
+local pywal_colors = read_pywal_colors()
+
+-- Theme colors using pywal scheme
+theme.bg_normal = pywal_colors[0]   -- color0 (background)
+theme.bg_focus = pywal_colors[4]    -- color4 (usually blue)
+theme.bg_urgent = pywal_colors[1]   -- color1 (usually red)
+theme.bg_minimize = pywal_colors[8] -- color8 (bright black)
 theme.bg_systray = theme.bg_normal
 
-theme.fg_normal = "#aaaaaa"
-theme.fg_focus = "#ffffff"
-theme.fg_urgent = "#ffffff"
-theme.fg_minimize = "#ffffff"
+theme.fg_normal = pywal_colors[7]    -- color7 (foreground)
+theme.fg_focus = pywal_colors[15]    -- color15 (white)
+theme.fg_urgent = pywal_colors[15]   -- color15 (white)
+theme.fg_minimize = pywal_colors[15] -- color15 (white)
 
 theme.useless_gap = dpi(0)
 theme.border_width = dpi(1)
-theme.border_normal = "#000000"
-theme.border_focus = "#535d6c"
-theme.border_marked = "#91231c"
-
--- There are other variable sets
--- overriding the default one when
--- defined, the sets are:
--- taglist_[bg|fg]_[focus|urgent|occupied|empty|volatile]
--- tasklist_[bg|fg]_[focus|urgent]
--- titlebar_[bg|fg]_[normal|focus]
--- tooltip_[font|opacity|fg_color|bg_color|border_width|border_color]
--- mouse_finder_[color|timeout|animate_timeout|radius|factor]
--- prompt_[fg|bg|fg_cursor|bg_cursor|font]
--- hotkeys_[bg|fg|border_width|border_color|shape|opacity|modifiers_fg|label_bg|label_fg|group_margin|font|description_font]
--- Example:
---theme.taglist_bg_focus = "#ff0000"
+theme.border_normal = pywal_colors[0] -- color0
+theme.border_focus = pywal_colors[4]  -- color4
+theme.border_marked = pywal_colors[1] -- color1
 
 -- Generate taglist squares:
 local taglist_square_size = dpi(4)
 theme.taglist_squares_sel = theme_assets.taglist_squares_sel(taglist_square_size, theme.fg_normal)
 theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(taglist_square_size, theme.fg_normal)
 
--- Variables set for theming notifications:
--- notification_font
--- notification_[bg|fg]
--- notification_[width|height|margin]
--- notification_[border_color|border_width|shape|opacity]
+-- Taglist colors using pywal
+theme.taglist_bg_focus = theme.bg_focus
+theme.taglist_fg_focus = theme.fg_focus
+theme.taglist_bg_occupied = pywal_colors[2] -- color2 (usually green)
+theme.taglist_fg_occupied = theme.fg_normal
+theme.taglist_bg_empty = theme.bg_normal
+theme.taglist_fg_empty = pywal_colors[8] -- color8 (dim foreground)
+
+-- Tasklist colors
+theme.tasklist_bg_focus = theme.bg_focus
+theme.tasklist_fg_focus = theme.fg_focus
+theme.tasklist_bg_normal = theme.bg_normal
+theme.tasklist_fg_normal = theme.fg_normal
 
 -- Variables set for theming the menu:
--- menu_[bg|fg]_[normal|focus]
--- menu_[border_color|border_width]
 theme.menu_submenu_icon = themes_path .. "default/submenu.png"
 theme.menu_height = dpi(15)
 theme.menu_width = dpi(100)
+theme.menu_bg_normal = theme.bg_normal
+theme.menu_fg_normal = theme.fg_normal
+theme.menu_bg_focus = theme.bg_focus
+theme.menu_fg_focus = theme.fg_focus
 
--- You can add as many variables as
--- you wish and access them by using
--- beautiful.variable in your rc.lua
---theme.bg_widget = "#cc0000"
+-- Titlebar colors using pywal
+theme.titlebar_bg_normal = theme.bg_normal
+theme.titlebar_fg_normal = theme.fg_normal
+theme.titlebar_bg_focus = theme.bg_focus
+theme.titlebar_fg_focus = theme.fg_focus
 
 -- Define the image to load
 theme.titlebar_close_button_normal = themes_path .. "default/titlebar/close_normal.png"
@@ -93,9 +137,21 @@ theme.titlebar_maximized_button_focus_inactive = themes_path .. "default/titleba
 theme.titlebar_maximized_button_normal_active = themes_path .. "default/titlebar/maximized_normal_active.png"
 theme.titlebar_maximized_button_focus_active = themes_path .. "default/titlebar/maximized_focus_active.png"
 
-theme.wallpaper = themes_path .. "default/background.png"
+-- Use pywal wallpaper
+local function get_pywal_wallpaper()
+  local wallpaper_file = pywal_cache_dir .. "/wallpaper"
+  local file = io.open(wallpaper_file, "r")
+  if file then
+    local wallpaper = file:read("*l")
+    file:close()
+    return wallpaper
+  end
+  return themes_path .. "default/background.png"   -- fallback
+end
 
--- You can use your own layout icons like this:
+theme.wallpaper = get_pywal_wallpaper()
+
+-- Layout icons
 theme.layout_fairh = themes_path .. "default/layouts/fairhw.png"
 theme.layout_fairv = themes_path .. "default/layouts/fairvw.png"
 theme.layout_floating = themes_path .. "default/layouts/floatingw.png"
@@ -120,6 +176,52 @@ theme.awesome_icon = theme_assets.awesome_icon(theme.menu_height, theme.bg_focus
 -- from /usr/share/icons and /usr/share/icons/hicolor will be used.
 theme.icon_theme = nil
 
-return theme
+-- Function to update theme when pywal colors change
+function theme.update_pywal_colors()
+  local new_colors = read_pywal_colors()
 
--- vim: filetype=lua:expandtab:shiftwidth=4:tabstop=8:softtabstop=4:textwidth=80
+  -- Update theme colors
+  theme.bg_normal = new_colors[0]
+  theme.bg_focus = new_colors[4]
+  theme.bg_urgent = new_colors[1]
+  theme.bg_minimize = new_colors[8]
+  theme.bg_systray = theme.bg_normal
+
+  theme.fg_normal = new_colors[7]
+  theme.fg_focus = new_colors[15]
+  theme.fg_urgent = new_colors[15]
+  theme.fg_minimize = new_colors[15]
+
+  theme.border_normal = new_colors[0]
+  theme.border_focus = new_colors[4]
+  theme.border_marked = new_colors[1]
+
+  -- Update taglist colors
+  theme.taglist_bg_focus = theme.bg_focus
+  theme.taglist_fg_focus = theme.fg_focus
+  theme.taglist_bg_occupied = new_colors[2]
+  theme.taglist_fg_occupied = theme.fg_normal
+  theme.taglist_bg_empty = theme.bg_normal
+  theme.taglist_fg_empty = new_colors[8]
+
+  -- Update wallpaper
+  theme.wallpaper = get_pywal_wallpaper()
+
+  -- Re-apply the theme
+  beautiful.init(gears.filesystem.get_configuration_dir() .. "theme.lua")
+
+  -- Update all screens
+  for s in screen do
+    -- Update wallpaper
+    --if theme.wallpaper then
+    --    gears.wallpaper.maximized(theme.wallpaper, s, true)
+    --end
+
+    -- Update wibox
+    if s.mywibox then
+      s.mywibox:setup(s.mywibox:get_children_by_id("main_container")[1].widget)
+    end
+  end
+end
+
+return theme
