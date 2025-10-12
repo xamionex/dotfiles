@@ -188,7 +188,7 @@ function widgets.remove_all()
   --   end
 
   -- Force garbage collection to free up resources
-  --   collectgarbage()
+   collectgarbage()
 end
 
 -- Reinitialize all widgets (useful for theme changes or config reloads)
