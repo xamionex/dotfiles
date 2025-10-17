@@ -32,7 +32,7 @@ function title_bars.create_titlebar(c)
             buttons = buttons,
             layout = wibox.layout.fixed.horizontal,
         },
-        { -- Middle
+        {     -- Middle
             { -- Title
                 align = "center",
                 widget = awful.titlebar.widget.titlewidget(c),
@@ -99,8 +99,8 @@ function title_bars.refresh_all()
     -- Recreate titlebars for all valid clients
     for _, c in ipairs(client.get()) do
         if c.valid then
-            title_bars.remove_titlebar(c)  -- Remove existing first
-            title_bars.create_titlebar(c)  -- Create new one
+            title_bars.remove_titlebar(c) -- Remove existing first
+            title_bars.create_titlebar(c) -- Create new one
         end
     end
 end

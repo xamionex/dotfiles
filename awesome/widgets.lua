@@ -26,8 +26,9 @@ function widgets.init_menu(terminal, editor_cmd)
 
   widgets.mymainmenu = awful.menu({
     items = {
-      { "awesome",       myawesomemenu, beautiful.awesome_icon },
-      { "open terminal", terminal },
+      { "I'm tired boss...",       "bash -c 'sudo systemctl poweroff -i'", beautiful.awesome_icon },
+      --{ "awesome",       myawesomemenu, beautiful.awesome_icon },
+      --{ "open terminal", terminal },
     },
   })
 
