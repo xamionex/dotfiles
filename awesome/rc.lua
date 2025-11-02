@@ -269,11 +269,11 @@ globalkeys = gears.table.join(
     end, { description = "show the menubar", group = "launcher" }),
 
     awful.key({}, "XF86AudioRaiseVolume", function()
-        awful.spawn("wpctl set-volume @DEFAULT_AUDIO_SINK@ 1%+")
+        awful.spawn("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+")
         notify_volume()
     end, { description = "Raise Volume by 1", group = "music" }),
     awful.key({}, "XF86AudioLowerVolume", function()
-        awful.spawn("wpctl set-volume @DEFAULT_AUDIO_SINK@ 1%-")
+        awful.spawn("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-")
         notify_volume()
     end, { description = "Lower Volume by 1", group = "music" }),
     awful.key({}, "XF86AudioMute", function()
