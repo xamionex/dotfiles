@@ -30,132 +30,139 @@
     {
       "type": "title",
       "format": "{2}",
-      "key": "╔╾ 󰪫 PC",
+      "key": "╔╾ 󰪫 PC              ",
       "keyColor": "31"
     },
     {
       "type": "os",
-      "key": "╠╾  OS",
+      "key": "╠╾  OS              ",
       "keyColor": "31"
     },
     {
       "type": "kernel",
-      "key": "╠╾  Kernel",
+      "key": "╠╾  Kernel          ",
       "keyColor": "31"
     },
     {
       "type": "bootmgr",
-      "key": "╠╾ 󰍂 Boot Manager",
+      "key": "╠╾ 󰍂 Boot Manager    ",
       "keyColor": "31"
     },
     {
       "type": "packages",
-      "key": "╚╾ 󰏗 Packages",
+      "key": "╚╾ 󰏗 Packages        ",
       "keyColor": "31"
     },
     "break",
     {
       "type": "wm",
-      "key": "╔╾  Window Manager",
+      "key": "╔╾  Window Manager  ",
       "keyColor": "32"
     },
     {
       "type": "terminal",
-      "key": "╠╾  Terminal",
+      "key": "╠╾  Terminal        ",
       "keyColor": "32"
     },
+    // slow for some reason
     //{
     //  "type": "terminalfont",
-    //  "key": "╠╾  Terminal Font",
+    //  "key": "╠╾  Terminal Font ",
     //  "keyColor": "32"
     //},
     {
       "type": "icons",
-      "key": "╠╾ 󰀻 Icons",
+      "key": "╠╾ 󰀻 Icons           ",
       "keyColor": "32"
     },
     {
       "type": "cursor",
-      "key": "╚╾  Cursor",
+      "key": "╚╾  Cursor          ",
       "keyColor": "32"
     },
     "break",
     {
       "type": "command",
-      "key": "╔╾ 󱦟 OS Age ",
+      "key": "╔╾ 󱦟 OS Age          ",
       "keyColor": "33",
       "format": "{result}",
       "text": "\"$HOME\"/.config/fastfetch/oshowold.sh"
     },
     {
       "type": "command",
-      "key": "╠╾ 󱦟 OS Birthday ",
+      "key": "╠╾ 󱦟 OS Birthday     ",
       "keyColor": "33",
       "format": "{result}",
       "text": "\"$HOME\"/.config/fastfetch/oshowold.sh 2 2"
     },
     {
       "type": "uptime",
-      "key": "╚╾  Uptime ",
+      "key": "╚╾  Uptime          ",
       "keyColor": "33"
     },
     "break",
     {
       "type": "title",
       "format": "{1}",
-      "key": "╔╾  User",
+      "key": "╔╾  User            ",
       "keyColor": "30"
     },
     {
       "type": "media",
-      "key": "╠╾ 󰝚 Music",
+      "key": "╠╾ 󰝚 Music           ",
       "keyColor": "30"
     },
     {
       "type": "sound",
-      "key": "╠╾ 󰝚 Sound",
+      "key": "╠╾ 󰝚 Sound           ",
       "keyColor": "30"
     },
     {
       "type": "custom",
-      "key": "╚╾ 󰊤 GitHub",
+      "key": "╚╾ 󰊤 GitHub          ",
       "format": "xamionex",
       "keyColor": "30"
     },
     "break",
     {
       "type": "board",
-      "key": "╔╾  Motherboard",
+      "key": "╔╾  Motherboard     ",
       "keyColor": "34"
     },
     {
       "type": "cpu",
-      "key": "╠╾  CPU",
+      "key": "╠╾  CPU             ",
       "keyColor": "34"
     },
     {
       "type": "gpu",
-      "key": "╠╾ 󰢮 GPU",
+      "key": "╠╾ 󰢮 GPU             ",
       "keyColor": "34"
     },
     {
       "type": "memory",
-      "key": "╠╾  Memory",
-      "keyColor": "34"
+      "key": "╠╾  Memory          ",
+      "keyColor": "34",
+      "percent": {
+      	"type": 3
+      }
     },
-    //{
-    // "type": "disk",
-    // "key": "╠╾  Disk",
-    // "keyColor": "34"
-    //},
+    {
+     "type": "disk",
+     "key": "╠╾  Disk            ",
+     "keyColor": "34",
+     "percent": {
+     	"type": 3
+     }
+    },
     {
       "type": "battery",
-      "key": "╠╾ 󰂎 Battery",
+      "key": "╠╾ 󰂎 Battery         ",
       "keyColor": "34"
     },
     {
       "type": "monitor",
-      "key": "╚╾ 󰷜 Monitor",
+      "key": "╚╾ 󰷜 Monitor         ",
       "keyColor": "34"
     },
     "break",
@@ -168,3 +175,4 @@
     "break"
   ]
 }
+
