@@ -3,14 +3,21 @@
   "logo": {
     "source": "$(\"$HOME\"/.config/fastfetch/get_distro_logo.sh)",
     "type": "kitty",
-    "height": 20,
+    "height": 15,
     "padding": {
       "top": 2,
-      "left": 5
+      "left": 2
     }
   },
   "display": {
-    "separator": " ➜  "
+    "separator": " >> ",
+    "key": {
+        "width": 33,       // Aligns keys to this width
+        "type": "both",   // string, icon, both, or none
+    },
+    "percent": {
+        "type": 3         // 1=number, 2=bar, 3=both, 9=colored number
+    }
   },
   "modules": [
     {
@@ -29,141 +36,117 @@
     "break",
     {
       "type": "title",
+      "key": "User",
+      "keyIcon": "",
+      "format": "{1}",
+      "keyColor": "31"
+    },
+    {
+      "type": "title",
+      "key": "Hostname",
       "format": "{2}",
-      "key": "╔╾ 󰪫 PC              ",
       "keyColor": "31"
     },
     {
       "type": "os",
-      "key": "╠╾  OS              ",
       "keyColor": "31"
     },
     {
       "type": "kernel",
-      "key": "╠╾  Kernel          ",
       "keyColor": "31"
     },
     {
       "type": "bootmgr",
-      "key": "╠╾ 󰍂 Boot Manager    ",
+      "keyIcon": "",
       "keyColor": "31"
     },
     {
       "type": "packages",
-      "key": "╚╾ 󰏗 Packages        ",
       "keyColor": "31"
     },
     "break",
     {
       "type": "wm",
-      "key": "╔╾  Window Manager  ",
       "keyColor": "32"
     },
     {
       "type": "terminal",
-      "key": "╠╾  Terminal        ",
+      "keyIcon": "",
       "keyColor": "32"
     },
     // slow for some reason
     //{
     //  "type": "terminalfont",
-    //  "key": "╠╾  Terminal Font ",
+    //  "key": "╠╾  Terminal Font",
     //  "keyColor": "32"
     //},
     {
       "type": "icons",
-      "key": "╠╾ 󰀻 Icons           ",
       "keyColor": "32"
     },
     {
       "type": "cursor",
-      "key": "╚╾  Cursor          ",
+      "keyIcon": "󰳽",
       "keyColor": "32"
     },
     "break",
     {
       "type": "command",
-      "key": "╔╾ 󱦟 OS Age          ",
+      "keyIcon": "󱦟",
+      "key": "OS Age",
       "keyColor": "33",
       "format": "{result}",
       "text": "\"$HOME\"/.config/fastfetch/oshowold.sh"
     },
     {
       "type": "command",
-      "key": "╠╾ 󱦟 OS Birthday     ",
+      "keyIcon": "󰔟",
+      "key": "OS Birthday",
       "keyColor": "33",
       "format": "{result}",
       "text": "\"$HOME\"/.config/fastfetch/oshowold.sh 2 2"
     },
     {
       "type": "uptime",
-      "key": "╚╾  Uptime          ",
       "keyColor": "33"
     },
     "break",
     {
-      "type": "title",
-      "format": "{1}",
-      "key": "╔╾  User            ",
-      "keyColor": "30"
-    },
-    {
       "type": "media",
-      "key": "╠╾ 󰝚 Music           ",
-      "keyColor": "30"
+      "keyColor": "36"
     },
     {
       "type": "sound",
-      "key": "╠╾ 󰝚 Sound           ",
-      "keyColor": "30"
-    },
-    {
-      "type": "custom",
-      "key": "╚╾ 󰊤 GitHub          ",
-      "format": "xamionex",
-      "keyColor": "30"
+      "keyColor": "36"
     },
     "break",
     {
       "type": "board",
-      "key": "╔╾  Motherboard     ",
       "keyColor": "34"
     },
     {
       "type": "cpu",
-      "key": "╠╾  CPU             ",
       "keyColor": "34"
     },
     {
       "type": "gpu",
-      "key": "╠╾ 󰢮 GPU             ",
       "keyColor": "34"
     },
     {
-      "type": "memory",
-      "key": "╠╾  Memory          ",
-      "keyColor": "34",
-      "percent": {
-      	"type": 3
-      }
-    },
-    {
-     "type": "disk",
-     "key": "╠╾  Disk            ",
-     "keyColor": "34",
-     "percent": {
-     	"type": 3
-     }
+      "type": "display",
+      "keyColor": "34"
     },
     {
       "type": "battery",
-      "key": "╠╾ 󰂎 Battery         ",
       "keyColor": "34"
     },
     {
-      "type": "monitor",
-      "key": "╚╾ 󰷜 Monitor         ",
-      "keyColor": "34"
+     "type": "disk",
+     "keyColor": "34",
+    },
+    {
+      "type": "memory",
+      "keyColor": "34",
     },
     "break",
     {
@@ -175,4 +158,7 @@
     "break"
   ]
 }
+
+
+
 
