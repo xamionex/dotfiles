@@ -522,6 +522,4 @@ end
 print("Lua ran!")
 
 -- Dont turn off monitor
---os.execute("xset s off")
---os.execute("xset -dpms")
---os.execute("xset s noblank")
+--os.execute("xset s off; xset -dpms; xset s noblank")

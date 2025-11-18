@@ -26,7 +26,14 @@ function widgets.init_menu(terminal, editor_cmd)
 
   widgets.mymainmenu = awful.menu({
     items = {
-      { "I'm tired boss...",       "bash -c 'sudo systemctl poweroff -i'", beautiful.awesome_icon },
+      { "I'm tired boss...", "bash -c 'sudo systemctl poweroff -i'", beautiful.awesome_icon },
+  
+      -- Disable screensaver, DPMS, and blanking
+      { "Force Monitor On", "bash -c 'xset s off; xset -dpms; xset s noblank'" },
+  
+      -- Restore screensaver, DPMS, and blanking
+      { "Allow Monitor Off", "bash -c 'xset s on; xset +dpms; xset s blank'" },
+  
       --{ "awesome",       myawesomemenu, beautiful.awesome_icon },
       --{ "open terminal", terminal },
     },
