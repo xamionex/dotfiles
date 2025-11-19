@@ -1,0 +1,1 @@
+/home/petar/Projects/dotfiles/scripts/screenshot.sh
