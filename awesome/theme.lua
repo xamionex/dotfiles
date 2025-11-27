@@ -21,62 +21,62 @@ local pywal_cache_dir = os.getenv("HOME") .. "/.cache/wal"
 
 -- Function to read pywal colors
 local function read_pywal_colors()
-  local colors_file = pywal_cache_dir .. "/colors"
-  local file = io.open(colors_file, "r")
+    local colors_file = pywal_cache_dir .. "/colors"
+    local file = io.open(colors_file, "r")
 
-  if not file then
-    -- Fallback colors if pywal isn't set up
-    return {
-      background = "#222222",
-      foreground = "#aaaaaa",
-      color0 = "#222222",
-      color1 = "#ff0000",
-      color2 = "#00ff00",
-      color3 = "#ffff00",
-      color4 = "#0000ff",
-      color5 = "#ff00ff",
-      color6 = "#00ffff",
-      color7 = "#aaaaaa",
-      color8 = "#444444",
-      color9 = "#ff4444",
-      color10 = "#44ff44",
-      color11 = "#ffff44",
-      color12 = "#4444ff",
-      color13 = "#ff44ff",
-      color14 = "#44ffff",
-      color15 = "#ffffff"
-    }
-  end
+    if not file then
+        -- Fallback colors if pywal isn't set up
+        return {
+            background = "#222222",
+            foreground = "#aaaaaa",
+            color0 = "#222222",
+            color1 = "#ff0000",
+            color2 = "#00ff00",
+            color3 = "#ffff00",
+            color4 = "#0000ff",
+            color5 = "#ff00ff",
+            color6 = "#00ffff",
+            color7 = "#aaaaaa",
+            color8 = "#444444",
+            color9 = "#ff4444",
+            color10 = "#44ff44",
+            color11 = "#ffff44",
+            color12 = "#4444ff",
+            color13 = "#ff44ff",
+            color14 = "#44ffff",
+            color15 = "#ffffff"
+        }
+    end
 
-  local colors = {}
-  for i = 0, 15 do
-    colors[i] = file:read("*l")
-  end
-  file:close()
+    local colors = {}
+    for i = 0, 15 do
+        colors[i] = file:read("*l")
+    end
+    file:close()
 
-  return colors
+    return colors
 end
 
 -- Initialize colors from pywal
 local pywal_colors = read_pywal_colors()
 
 -- Theme colors using pywal scheme
-theme.bg_normal = pywal_colors[0]   -- color0 (background)
-theme.bg_focus = pywal_colors[4]    -- color4 (usually blue)
-theme.bg_urgent = pywal_colors[1]   -- color1 (usually red)
-theme.bg_minimize = pywal_colors[8] -- color8 (bright black)
+theme.bg_normal = pywal_colors[0]           -- color0 (background)
+theme.bg_focus = pywal_colors[4]            -- color4 (usually blue)
+theme.bg_urgent = pywal_colors[1]           -- color1 (usually red)
+theme.bg_minimize = pywal_colors[8]         -- color8 (bright black)
 theme.bg_systray = theme.bg_normal
 
-theme.fg_normal = pywal_colors[7]    -- color7 (foreground)
-theme.fg_focus = pywal_colors[15]    -- color15 (white)
-theme.fg_urgent = pywal_colors[15]   -- color15 (white)
-theme.fg_minimize = pywal_colors[15] -- color15 (white)
+theme.fg_normal = pywal_colors[7]            -- color7 (foreground)
+theme.fg_focus = pywal_colors[15]            -- color15 (white)
+theme.fg_urgent = pywal_colors[15]           -- color15 (white)
+theme.fg_minimize = pywal_colors[15]         -- color15 (white)
 
 theme.useless_gap = dpi(0)
 theme.border_width = dpi(1)
-theme.border_normal = pywal_colors[0] -- color0
-theme.border_focus = pywal_colors[4]  -- color4
-theme.border_marked = pywal_colors[1] -- color1
+theme.border_normal = pywal_colors[0]         -- color0
+theme.border_focus = pywal_colors[4]          -- color4
+theme.border_marked = pywal_colors[1]         -- color1
 
 -- Generate taglist squares:
 local taglist_square_size = dpi(4)
@@ -86,10 +86,10 @@ theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(taglist_square_
 -- Taglist colors using pywal
 theme.taglist_bg_focus = theme.bg_focus
 theme.taglist_fg_focus = theme.fg_focus
-theme.taglist_bg_occupied = pywal_colors[2] -- color2 (usually green)
+theme.taglist_bg_occupied = pywal_colors[2]         -- color2 (usually green)
 theme.taglist_fg_occupied = theme.fg_normal
 theme.taglist_bg_empty = theme.bg_normal
-theme.taglist_fg_empty = pywal_colors[8] -- color8 (dim foreground)
+theme.taglist_fg_empty = pywal_colors[8]         -- color8 (dim foreground)
 
 -- Tasklist colors
 theme.tasklist_bg_focus = theme.bg_focus
@@ -139,20 +139,6 @@ theme.titlebar_maximized_button_focus_inactive = themes_path .. "default/titleba
 theme.titlebar_maximized_button_normal_active = themes_path .. "default/titlebar/maximized_normal_active.png"
 theme.titlebar_maximized_button_focus_active = themes_path .. "default/titlebar/maximized_focus_active.png"
 
--- Use pywal wallpaper
-local function get_pywal_wallpaper()
-  local wallpaper_file = pywal_cache_dir .. "/wallpaper"
-  local file = io.open(wallpaper_file, "r")
-  if file then
-    local wallpaper = file:read("*l")
-    file:close()
-    return wallpaper
-  end
-  return themes_path .. "default/background.png" -- fallback
-end
-
-theme.wallpaper = get_pywal_wallpaper()
-
 -- Layout icons
 theme.layout_fairh = themes_path .. "default/layouts/fairhw.png"
 theme.layout_fairv = themes_path .. "default/layouts/fairvw.png"
@@ -180,64 +166,48 @@ theme.icon_theme = nil
 
 -- Function to update theme when pywal colors change
 function theme.update_pywal_colors()
-  local new_colors = read_pywal_colors()
+    local new_colors = read_pywal_colors()
 
-  -- Update theme colors
-  theme.bg_normal = new_colors[0]
-  theme.bg_focus = new_colors[4]
-  theme.bg_urgent = new_colors[1]
-  theme.bg_minimize = new_colors[8]
-  theme.bg_systray = theme.bg_normal
+    -- Update theme colors
+    theme.bg_normal = new_colors[0]
+    theme.bg_focus = new_colors[4]
+    theme.bg_urgent = new_colors[1]
+    theme.bg_minimize = new_colors[8]
+    theme.bg_systray = theme.bg_normal
 
-  theme.fg_normal = new_colors[7]
-  theme.fg_focus = new_colors[15]
-  theme.fg_urgent = new_colors[15]
-  theme.fg_minimize = new_colors[15]
+    theme.fg_normal = new_colors[7]
+    theme.fg_focus = new_colors[15]
+    theme.fg_urgent = new_colors[15]
+    theme.fg_minimize = new_colors[15]
 
-  theme.border_normal = new_colors[0]
-  theme.border_focus = new_colors[4]
-  theme.border_marked = new_colors[1]
+    theme.border_normal = new_colors[0]
+    theme.border_focus = new_colors[4]
+    theme.border_marked = new_colors[1]
 
-  -- Update taglist colors
-  theme.taglist_bg_focus = theme.bg_focus
-  theme.taglist_fg_focus = theme.fg_focus
-  theme.taglist_bg_occupied = new_colors[2]
-  theme.taglist_fg_occupied = theme.fg_normal
-  theme.taglist_bg_empty = theme.bg_normal
-  theme.taglist_fg_empty = new_colors[8]
+    -- Update taglist colors
+    theme.taglist_bg_focus = theme.bg_focus
+    theme.taglist_fg_focus = theme.fg_focus
+    theme.taglist_bg_occupied = new_colors[2]
+    theme.taglist_fg_occupied = theme.fg_normal
+    theme.taglist_bg_empty = theme.bg_normal
+    theme.taglist_fg_empty = new_colors[8]
 
-  -- Update wallpaper
-  theme.wallpaper = get_pywal_wallpaper()
+    -- Re-apply the theme
+    beautiful.init(gears.filesystem.get_configuration_dir() .. "theme.lua")
 
-  -- Re-apply the theme
-  beautiful.init(gears.filesystem.get_configuration_dir() .. "theme.lua")
-
-  -- Update all clients' border colors
-  for _, c in ipairs(client.get()) do
-    if c.valid then
-      if c == client.focus then
-        c.border_color = theme.border_focus
-      else
-        c.border_color = theme.border_normal
-      end
+    -- Update all clients' border colors
+    for _, c in ipairs(client.get()) do
+        if c.valid then
+            if c == client.focus then
+                c.border_color = theme.border_focus
+            else
+                c.border_color = theme.border_normal
+            end
+        end
     end
-  end
 
-  -- Update all screens
-  for s in screen do
-    -- Update wallpaper
-    --if theme.wallpaper then
-    --    gears.wallpaper.maximized(theme.wallpaper, s, true)
-    --end
-
-    -- Update wibox
-    if s.mywibox then
-      --s.mywibox:setup(s.mywibox:get_children_by_id("main_container")[1].widget)
-      widgets.reinitialize()
-    end
-  end
-
-  title_bars.refresh_all()
+    widgets.recolor()
+    title_bars.refresh_all()
 end
 
 return theme

@@ -74,6 +74,10 @@ local function random_wallpaper()
         if pick ~= current_wallpaper then
             set_wallpaper(pick)
             apply_pywal(pick)
+
+            -- gears in wallpaper creates garbage
+            -- and something else while applying pywal as well
+            collectgarbage("collect")
         end
     end)
 end
@@ -83,14 +87,14 @@ end
 -- ==================================================
 
 local function start_timer()
-	if not wallpaper_timer then
-	    wallpaper_timer = gears.timer {
-	        timeout = 10, -- Rotate every X seconds
-	        autostart = true,
-	        call_now = true,
-	        callback = random_wallpaper()
-	    }
-	end
+    if not wallpaper_timer then
+        wallpaper_timer = gears.timer {
+            timeout = 10,
+            autostart = true,
+            call_now = true,
+            callback = random_wallpaper
+        }
+    end
 end
 
 function cleanup_wallpaper()

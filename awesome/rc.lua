@@ -187,11 +187,11 @@ globalkeys = gears.table.join(
 	end, { description = "go back", group = "client" }),
 
 	awful.key({}, "Print", function()
-	awful.spawn("~/.config/awesome/screenshot.sh")
+		awful.spawn("~/.config/awesome/screenshot.sh")
 	end, { description = "take screenshot", group = "launcher" }),
 
 	awful.key({ "Shift" }, "Print", function()
-	awful.spawn("~/.config/awesome/screenshot.sh -f")
+		awful.spawn("~/.config/awesome/screenshot.sh -f")
 	end, { description = "take fullscreen screenshot", group = "launcher" }),
 
 	-- Standard program
@@ -291,9 +291,9 @@ globalkeys = gears.table.join(
 		awful.spawn("mpc toggle")
 	end, { description = "Toggle music playing", group = "music" })
 
-	--awful.key({ modkey }, "d", function()
-	--	toggle_fake_screen()
-	--end, { description = "toggle fake screen", group = "screen" })
+--awful.key({ modkey }, "d", function()
+--	toggle_fake_screen()
+--end, { description = "toggle fake screen", group = "screen" })
 )
 
 clientkeys = gears.table.join(
@@ -427,13 +427,6 @@ client.connect_signal("mouse::enter", function(c)
 	c:emit_signal("request::activate", "mouse_enter", { raise = false })
 end)
 
-client.connect_signal("focus", function(c)
-	c.border_color = beautiful.border_focus
-end)
-client.connect_signal("unfocus", function(c)
-	c.border_color = beautiful.border_normal
-end)
-
 client.connect_signal("manage", function(c)
 	-- Set the windows at the slave,
 	-- i.e. put it at the end of others instead of setting it master.
@@ -474,52 +467,6 @@ awful.ewmh.add_activate_filter(function(c, context)
 	return false
 end, "client.movetoscreen")
 
-widgets.init_all()
-
--- Memory monitoring
-gears.timer({
-	timeout = 60,
-	call_now = true,
-	autostart = true,
-	callback = function()
-		awful.spawn.easy_async("ps -o rss= -p " .. tostring(awesome.pid), function(out)
-			-- Check if output exists and is valid
-			if out and out ~= "" then
-				local mem_kb = tonumber(out)
-				if mem_kb then
-					local mem_mb = math.floor(mem_kb / 1024)
-					if mem_mb > 200 then
-						naughty.notify({
-							title = "High Memory Usage",
-							text = "AwesomeWM using " .. mem_mb .. "MB",
-							timeout = 5,
-						})
-						collectgarbage()
-					end
-				else
-					-- Handle case where tonumber fails
-					naughty.notify({
-						title = "Memory Monitor Error",
-						text = "Could not parse memory usage: " .. out,
-						timeout = 5,
-					})
-				end
-			end
-		end)
-	end,
-})
-
-function reload()
-	widgets.remove_all()
-	title_bars.remove_all()
-	wallpaper.cleanup()
-	collectgarbage()
-	widgets.init_all()
-	title_bars.enable()
-	wallpaper.start()
-end
+widgets.init()
 
 print("Lua ran!")
-
--- Dont turn off monitor
---os.execute("xset s off; xset -dpms; xset s noblank")

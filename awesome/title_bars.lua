@@ -1,6 +1,7 @@
 local awful = require("awful")
 local gears = require("gears")
 local wibox = require("wibox")
+local beautiful = require("beautiful")
 
 local title_bars = {}
 
@@ -26,7 +27,11 @@ function title_bars.create_titlebar(c)
         end)
     )
 
-    awful.titlebar(c):setup({
+    awful.titlebar(c, {
+        size = 20,
+        bg_normal = beautiful.titlebar_bg_normal,
+        bg_focus = beautiful.titlebar_bg_focus,
+    }):setup({
         { -- Left
             awful.titlebar.widget.iconwidget(c),
             buttons = buttons,
@@ -60,6 +65,23 @@ function title_bars.remove_titlebar(c)
     if c and c.valid then
         awful.titlebar(c, { position = "top" }):remove()
         title_bars.current_clients[c] = nil
+    end
+end
+
+-- Function to update titlebar colors without recreation
+function title_bars.update_colors()
+    if not title_bars.enabled then return end
+
+    for _, c in ipairs(client.get()) do
+        if c and c.valid then
+            local titlebar = awful.titlebar(c, { position = "top" })
+            if titlebar then
+                -- Update titlebar background and foreground
+                titlebar.bg = beautiful.titlebar_bg_normal
+                titlebar.fg = beautiful.titlebar_fg_normal
+                titlebar:emit_signal("widget::redraw_needed")
+            end
+        end
     end
 end
 
@@ -128,6 +150,18 @@ end)
 -- Clean up when clients are closed
 client.connect_signal("unmanage", function(c)
     title_bars.current_clients[c] = nil
+end)
+
+client.connect_signal("focus", function(c)
+    if beautiful.border_focus then
+        c.border_color = beautiful.border_focus
+    end
+end)
+
+client.connect_signal("unfocus", function(c)
+    if beautiful.border_normal then
+        c.border_color = beautiful.border_normal
+    end
 end)
 
 return title_bars
