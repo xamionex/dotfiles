@@ -469,4 +469,19 @@ end, "client.movetoscreen")
 
 widgets.init()
 
+-- Fixes fullscreen offsetting bug
+-- https://github.com/awesomeWM/awesome/issues/4006
+client.connect_signal("property::fullscreen", function(c)
+    local tb_height = awful.titlebar(c).height --Custom Titlebar height
+            or math.floor(tonumber(beautiful.get_font_height(beautiful.get().font)*1.5)) --Default Titlebar height
+            or 45 --Failsafe
+    if c.fullscreen then
+        awful.titlebar.hide(c)
+        c.height = c.height + tb_height
+    else
+        awful.titlebar.show(c)
+        c.height = c.height - tb_height
+    end
+end)
+
 print("Lua ran!")
