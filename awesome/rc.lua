@@ -469,7 +469,7 @@ end, "client.movetoscreen")
 
 widgets.init()
 
--- Fixes fullscreen offsetting bug
+-- Fixes fullscreen offsetting bug with monitor toggle as well
 -- https://github.com/awesomeWM/awesome/issues/4006
 client.connect_signal("property::fullscreen", function(c)
     local tb_height = awful.titlebar(c).height --Custom Titlebar height
@@ -478,9 +478,11 @@ client.connect_signal("property::fullscreen", function(c)
     if c.fullscreen then
         awful.titlebar.hide(c)
         c.height = c.height + tb_height
+        os.execute("xset s off; xset -dpms; xset s noblank")
     else
         awful.titlebar.show(c)
         c.height = c.height - tb_height
+        os.execute("xset s on; xset +dpms; xset s blank")
     end
 end)
 
