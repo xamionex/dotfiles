@@ -469,20 +469,33 @@ end, "client.movetoscreen")
 
 widgets.init()
 
+function contains(tbl, val)
+    for _, value in ipairs(tbl) do -- ipairs iterates over the array part of the table
+        if value == val then
+            return true -- Found the value
+        end
+    end
+    return false -- Value not found after checking all items
+end
+
 -- Fixes fullscreen offsetting bug with monitor toggle as well
 -- https://github.com/awesomeWM/awesome/issues/4006
+local browsers = {"zen", "firefox", "firefox-esr", "chrome", "chromium"}
+
 client.connect_signal("property::fullscreen", function(c)
-    local tb_height = awful.titlebar(c).height --Custom Titlebar height
-            or math.floor(tonumber(beautiful.get_font_height(beautiful.get().font)*1.5)) --Default Titlebar height
-            or 45 --Failsafe
-    if c.fullscreen then
-        awful.titlebar.hide(c)
-        c.height = c.height + tb_height
-        os.execute("xset s off; xset -dpms; xset s noblank")
-    else
-        awful.titlebar.show(c)
-        c.height = c.height - tb_height
-        os.execute("xset s on; xset +dpms; xset s blank")
+	if contains(browsers, c.class) then
+	    local tb_height = awful.titlebar(c).height --Custom Titlebar height
+	            or math.floor(tonumber(beautiful.get_font_height(beautiful.get().font)*1.5)) --Default Titlebar height
+	            or 45 --Failsafe
+	    if c.fullscreen then
+	        awful.titlebar.hide(c)
+	        c.height = c.height + tb_height
+	        os.execute("xset s off; xset -dpms; xset s noblank")
+	    else
+	        awful.titlebar.show(c)
+	        c.height = c.height - tb_height
+	        os.execute("xset s on; xset +dpms; xset s blank")
+	    end
     end
 end)
 
