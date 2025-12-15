@@ -13,7 +13,6 @@ local auto_start = {
     --"xhidecursor",
     --"rssguard",
     --'"$HOME/.config/i3/Scripts/random-bg.sh"',
-    "blueman-applet",
 }
 
 for i = 1, #auto_start do
