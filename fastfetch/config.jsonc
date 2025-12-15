@@ -140,10 +140,10 @@
       "type": "battery",
       "keyColor": "34"
     },
-    {
-     "type": "disk",
-     "keyColor": "34",
-    },
+    //{
+    // "type": "disk",
+    // "keyColor": "34",
+    //},
     {
       "type": "memory",
       "keyColor": "34",
