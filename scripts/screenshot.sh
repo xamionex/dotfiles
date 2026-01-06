@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# Only use Flameshot as requested
-SCREENSHOT_TOOL="flameshot"
 MODE="area"  # Default to area selection
 UPLOAD=false  # Default to not uploading
 
@@ -49,13 +47,13 @@ MILLISECONDS=$(echo "$TIMESTAMP" | awk '{print $5}' | cut -b1-3)
 FILENAME="${DAY}d;${HOUR}h;${MINUTE}m;${SECOND}s;${MILLISECONDS}ms.png"
 FULL_PATH="${DIR}/${FILENAME}"
 
-# Take screenshot with Flameshot
+# Take screenshot
 case "$MODE" in
     "fullscreen")
-        flameshot full --raw > "$FULL_PATH"
+        QT_QPA_PLATFORM=xcb flameshot screen --raw > "$FULL_PATH"
         ;;
     "area")
-        flameshot gui --raw > "$FULL_PATH"
+        QT_QPA_PLATFORM=xcb flameshot gui --raw > "$FULL_PATH"
         ;;
 esac
 
