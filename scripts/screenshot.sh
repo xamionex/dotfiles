@@ -18,6 +18,10 @@ while [[ $# -gt 0 ]]; do
         MODE="area"
         shift
         ;;
+        -fa|-af|--fullarea)
+        MODE="fullarea"
+        shift
+        ;;
         -u|--upload)
         UPLOAD=true
         shift
@@ -48,23 +52,66 @@ FILENAME="${DAY}d;${HOUR}h;${MINUTE}m;${SECOND}s;${MILLISECONDS}ms"
 FULL_PATH="${DIR}/${FILENAME}.png"
 FULL_PATH_NO_ANNOTATIONS="${DIR}/${FILENAME}_no_annotations.png"
 
-# Take screenshot
-case "$MODE" in
-    "fullscreen")
-       	# envvar for wayland compat
-        QT_QPA_PLATFORM=xcb flameshot screen --raw > "$FULL_PATH"
-        ;;
-    "area")
-    	# envvar for wayland compat
-        QT_QPA_PLATFORM=xcb flameshot screen --raw > "$FULL_PATH_NO_ANNOTATIONS"
+# Detect session type
+if [[ -n $WAYLAND_DISPLAY ]]; then
+    SESSION="wayland"
+elif [[ -n $DISPLAY ]]; then
+    SESSION="x11"
+else
+    echo "Could not detect session type"
+    exit 1
+fi
 
-        # Annotate with satty
-        satty -f "$FULL_PATH_NO_ANNOTATIONS" -o "$FULL_PATH" --fullscreen --save-after-copy --actions-on-enter "save-to-file,exit" --actions-on-escape "exit" --actions-on-right-click "exit" --no-window-decoration --initial-tool "crop"
-        if [[ ! -s "$FULL_PATH" ]]; then
-        	rm "$FULL_PATH_NO_ANNOTATIONS"
-       	fi
-        ;;
-esac
+# Check if we're in KDE
+if [[ $XDG_CURRENT_DESKTOP == *"KDE"* ]] || [[ $XDG_SESSION_DESKTOP == "plasma" ]]; then
+    KDE=true
+else
+    KDE=false
+fi
+
+SPECTACLEFLAG=f
+if [[ "$MODE" == "area" ]]; then
+	SPECTACLEFLAG=m
+fi
+
+# Take screenshot - ALWAYS capture full screen
+if [[ $SESSION == "x11" ]]; then
+    flameshot screen --raw > "$FULL_PATH_NO_ANNOTATIONS"
+else
+    # Wayland
+    if [[ $KDE == true ]]; then
+        # KDE Wayland - full screen capture
+        spectacle -b -$SPECTACLEFLAG -n -o "$FULL_PATH_NO_ANNOTATIONS"
+    else
+        # Non-KDE Wayland (wlroots), not tested
+        grim "$FULL_PATH_NO_ANNOTATIONS"
+    fi
+fi
+
+# Then process based on mode
+if [[ -f "$FULL_PATH_NO_ANNOTATIONS" ]]; then
+    case "$MODE" in
+        "fullscreen")
+            # Just copy/rename the file
+            mv "$FULL_PATH_NO_ANNOTATIONS" "$FULL_PATH"
+            ;;
+        "area"|"fullarea")
+            # Open in satty for cropping
+            satty -f "$FULL_PATH_NO_ANNOTATIONS" -o "$FULL_PATH" --fullscreen \
+                --save-after-copy \
+                --actions-on-enter "save-to-file,exit" \
+                --actions-on-right-click "exit" \
+                --actions-on-escape "exit" \
+                --no-window-decoration \
+                --initial-tool "crop"
+            ;;
+    esac
+    
+    # Clean up temp file if final screenshot is empty
+    if [[ ! -s "$FULL_PATH" ]]; then
+        rm "$FULL_PATH_NO_ANNOTATIONS"
+    fi
+fi
 
 # Check if screenshot was captured
 if [[ ! -s "$FULL_PATH" ]]; then
@@ -84,20 +131,26 @@ if $UPLOAD; then
     UPLOADED_URL=${UPLOADED_URL//http:\/\/ip.petar.cc:3939/https:\/\/fb.petar.cc}
 
     # Copy URL to clipboard
-    if [ -n "$WAYLAND_DISPLAY" ] && command -v wl-copy &>/dev/null; then
+    if [[ $SESSION == "wayland" ]] && command -v wl-copy &>/dev/null; then
         echo -n "$UPLOADED_URL" | wl-copy
-    elif [ -n "$DISPLAY" ] && command -v xclip &>/dev/null; then
+    elif [[ $SESSION == "x11" ]] && command -v xclip &>/dev/null; then
         echo -n "$UPLOADED_URL" | xclip -selection clipboard
+    else
+    	notify-send "Error" "Failed to copy to clipboard"
+    	exit 0
     fi
 
     # Send notification with URL
     notify-send "Screenshot uploaded" "URL copied to clipboard: ${UPLOADED_URL}" -i "$FULL_PATH"
 else
     # Copy image to clipboard
-    if [ -n "$WAYLAND_DISPLAY" ] && command -v wl-copy &>/dev/null; then
+    if [[ $SESSION == "wayland" ]] && command -v wl-copy &>/dev/null; then
         wl-copy < "$FULL_PATH"
-    elif [ -n "$DISPLAY" ] && command -v xclip &>/dev/null; then
+    elif [[ $SESSION == "x11" ]] && command -v xclip &>/dev/null; then
         xclip -selection clipboard -t image/png "$FULL_PATH"
+    else
+    	notify-send "Error" "Failed to copy to clipboard"
+      	exit 0
     fi
     
     # Send notification
