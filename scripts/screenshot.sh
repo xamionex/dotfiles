@@ -44,22 +44,37 @@ SECOND=$(echo "$TIMESTAMP" | awk '{print $4}')
 MILLISECONDS=$(echo "$TIMESTAMP" | awk '{print $5}' | cut -b1-3)
 
 # Create filename and path
-FILENAME="${DAY}d;${HOUR}h;${MINUTE}m;${SECOND}s;${MILLISECONDS}ms.png"
-FULL_PATH="${DIR}/${FILENAME}"
+FILENAME="${DAY}d;${HOUR}h;${MINUTE}m;${SECOND}s;${MILLISECONDS}ms"
+FULL_PATH="${DIR}/${FILENAME}.png"
+FULL_PATH_NO_ANNOTATIONS="${DIR}/${FILENAME}_no_annotations.png"
 
 # Take screenshot
 case "$MODE" in
     "fullscreen")
+       	# envvar for wayland compat
         QT_QPA_PLATFORM=xcb flameshot screen --raw > "$FULL_PATH"
         ;;
     "area")
-        QT_QPA_PLATFORM=xcb flameshot gui --raw > "$FULL_PATH"
+    	# envvar for wayland compat
+        QT_QPA_PLATFORM=xcb flameshot screen --raw > "$FULL_PATH_NO_ANNOTATIONS"
+
+        # Annotate with satty
+        satty -f "$FULL_PATH_NO_ANNOTATIONS" -o "$FULL_PATH" --fullscreen --save-after-copy --actions-on-enter "save-to-file,exit" --actions-on-escape "exit" --actions-on-right-click "exit" --no-window-decoration --initial-tool "crop"
+        if [[ ! -s "$FULL_PATH" ]]; then
+        	rm "$FULL_PATH_NO_ANNOTATIONS"
+       	fi
         ;;
 esac
 
 # Check if screenshot was captured
 if [[ ! -s "$FULL_PATH" ]]; then
     exit 0
+fi
+
+# Optimize with oxipng
+oxipng "$FULL_PATH"
+if [[ -s "$FULL_PATH_NO_ANNOTATIONS" ]]; then
+	oxipng "$FULL_PATH_NO_ANNOTATIONS"
 fi
 
 if $UPLOAD; then

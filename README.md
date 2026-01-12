@@ -2,6 +2,8 @@
 - **wezterm** (terminal)
 - **rofi** (application launcher)
 - **flameshot** (screenshots)
+- **satty** (screenshots - Area Capture annotation)
+- **oxipng** (screenshots - PNG optimization after capture)
 - **picom** (compositor)
 - **mpd** + **mpc** (music player)
 - **wireplumber** (audio control - `wpctl`)
