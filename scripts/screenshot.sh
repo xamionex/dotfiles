@@ -14,6 +14,10 @@ while [[ $# -gt 0 ]]; do
         MODE="fullscreen"
         shift
         ;;
+        -s|--screen)
+        MODE="screen"
+        shift
+        ;;
         -a|--area)
         MODE="area"
         shift
@@ -70,7 +74,7 @@ else
 fi
 
 SPECTACLEFLAG=f
-if [[ "$MODE" == "area" ]]; then
+if [[ "$MODE" == "area" ]] || [[ "$MODE" == "screen" ]]; then
 	SPECTACLEFLAG=m
 fi
 
@@ -91,7 +95,7 @@ fi
 # Then process based on mode
 if [[ -f "$FULL_PATH_NO_ANNOTATIONS" ]]; then
     case "$MODE" in
-        "fullscreen")
+        "fullscreen"|"screen")
             # Just copy/rename the file
             mv "$FULL_PATH_NO_ANNOTATIONS" "$FULL_PATH"
             ;;
