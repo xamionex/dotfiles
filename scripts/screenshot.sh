@@ -122,12 +122,6 @@ if [[ ! -s "$FULL_PATH" ]]; then
     exit 0
 fi
 
-# Optimize with oxipng
-oxipng "$FULL_PATH"
-if [[ -s "$FULL_PATH_NO_ANNOTATIONS" ]]; then
-	oxipng "$FULL_PATH_NO_ANNOTATIONS"
-fi
-
 if $UPLOAD; then
     # Upload to copyparty and get URL
     UPLOAD_URL="$COPYPARTY_URL/$FILENAME"
@@ -159,4 +153,10 @@ else
     
     # Send notification
     notify-send "Screenshot captured" "Image copied to clipboard" -i "$FULL_PATH"
+fi
+
+# Optimize with oxipng
+oxipng -o max "$FULL_PATH"
+if [[ -s "$FULL_PATH_NO_ANNOTATIONS" ]]; then
+	oxipng -o max "$FULL_PATH_NO_ANNOTATIONS"
 fi
