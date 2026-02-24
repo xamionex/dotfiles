@@ -149,7 +149,11 @@
     //},
     {
       "type": "memory",
-      "keyColor": "34",
+      "keyColor": "34"
+    },
+    {
+      "type": "swap",
+      "keyColor": "34"
     },
     "break",
     {
