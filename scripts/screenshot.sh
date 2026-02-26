@@ -1,11 +1,6 @@
 #!/usr/bin/env bash
 
 MODE="area"  # Default to area selection
-UPLOAD=false  # Default to not uploading
-
-# Copyparty configuration
-COPYPARTY_URL="https://upload.petar.cc/Upload/petar"
-COPYPARTY_PW="petargaming"
 
 # Parse command-line arguments
 while [[ $# -gt 0 ]]; do
@@ -26,13 +21,9 @@ while [[ $# -gt 0 ]]; do
         MODE="fullarea"
         shift
         ;;
-        -u|--upload)
-        UPLOAD=true
-        shift
-        ;;
         *)
         echo "Unknown option: $1"
-        echo "Usage: $0 [-f|--fullscreen] [-a|--area] [-u|--upload]"
+        echo "Usage: $0 [-f|--fullscreen] [-a|--area] [-af|-fa|--fullarea]"
         exit 1
         ;;
     esac
@@ -122,38 +113,18 @@ if [[ ! -s "$FULL_PATH" ]]; then
     exit 0
 fi
 
-if $UPLOAD; then
-    # Upload to copyparty and get URL
-    UPLOAD_URL="$COPYPARTY_URL/$FILENAME"
-    UPLOADED_URL=$(curl -s -T "$FULL_PATH" -H "pw: $COPYPARTY_PW" -w "%{url_effective}\n" -o /dev/null "$UPLOAD_URL")
-    UPLOADED_URL=${UPLOADED_URL//http:\/\/ip.petar.cc:3939/https:\/\/fb.petar.cc}
-
-    # Copy URL to clipboard
-    if [[ $SESSION == "wayland" ]] && command -v wl-copy &>/dev/null; then
-        echo -n "$UPLOADED_URL" | wl-copy
-    elif [[ $SESSION == "x11" ]] && command -v xclip &>/dev/null; then
-        echo -n "$UPLOADED_URL" | xclip -selection clipboard
-    else
-    	notify-send "Error" "Failed to copy to clipboard"
-    	exit 0
-    fi
-
-    # Send notification with URL
-    notify-send "Screenshot uploaded" "URL copied to clipboard: ${UPLOADED_URL}" -i "$FULL_PATH"
+# Copy image to clipboard
+if [[ $SESSION == "wayland" ]] && command -v wl-copy &>/dev/null; then
+    wl-copy < "$FULL_PATH"
+elif [[ $SESSION == "x11" ]] && command -v xclip &>/dev/null; then
+    xclip -selection clipboard -t image/png "$FULL_PATH"
 else
-    # Copy image to clipboard
-    if [[ $SESSION == "wayland" ]] && command -v wl-copy &>/dev/null; then
-        wl-copy < "$FULL_PATH"
-    elif [[ $SESSION == "x11" ]] && command -v xclip &>/dev/null; then
-        xclip -selection clipboard -t image/png "$FULL_PATH"
-    else
-    	notify-send "Error" "Failed to copy to clipboard"
-      	exit 0
-    fi
-    
-    # Send notification
-    notify-send "Screenshot captured" "Image copied to clipboard" -i "$FULL_PATH"
+	notify-send "Error" "Failed to copy to clipboard"
+  	exit 0
 fi
+
+# Send notification
+notify-send "Screenshot captured" "Image copied to clipboard" -i "$FULL_PATH"
 
 # Optimize with oxipng
 oxipng -o max "$FULL_PATH"
