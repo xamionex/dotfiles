@@ -9,6 +9,8 @@
 - **wireplumber** (audio control - `wpctl`)
 - **greenclip** (clipboard manager)
 - **micro** (text editor)
+- For screenshot.sh you need to add it to your path variable (~/.config/awesome/screenshot.sh)
+  - For some reason it won't launch with $HOME or ~ in awesomewm and I can't be bothered to find out why right now
 
 ## System Utilities
 - **numlockx** (numlock control)
