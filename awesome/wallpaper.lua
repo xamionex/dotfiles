@@ -89,7 +89,7 @@ end
 local function start_timer()
     if not wallpaper_timer then
         wallpaper_timer = gears.timer {
-            timeout = 10,
+            timeout = 3600,
             autostart = true,
             call_now = true,
             callback = random_wallpaper
@@ -106,7 +106,7 @@ end
 
 screen.connect_signal("property::geometry", function(s) set_wallpaper(current_wallpaper) end)
 
-random_wallpaper()
+start_timer()
 
 return {
     set_wallpaper = set_wallpaper,
