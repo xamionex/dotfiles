@@ -1,98 +1,47 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-MODE="area"  # Default to area selection
-
-# Parse command-line arguments
+MODE="area"
 while [[ $# -gt 0 ]]; do
     case $1 in
-        -f|--fullscreen)
-        MODE="fullscreen"
-        shift
-        ;;
-        -s|--screen)
-        MODE="screen"
-        shift
-        ;;
-        -a|--area)
-        MODE="area"
-        shift
-        ;;
-        -fa|-af|--fullarea)
-        MODE="fullarea"
-        shift
-        ;;
-        *)
-        echo "Unknown option: $1"
-        echo "Usage: $0 [-f|--fullscreen] [-a|--area] [-af|-fa|--fullarea]"
-        exit 1
-        ;;
+        -f|--fullscreen) MODE="fullscreen"; shift ;;
+        -s|--screen)     MODE="screen"; shift ;;
+        -a|--area)       MODE="area"; shift ;;
+        -fa|-af|--fullarea) MODE="fullarea"; shift ;;
+        *) echo "Unknown option: $1" >&2; exit 1 ;;
     esac
 done
 
-# Create directory path
-CLASS_NAME=$(/home/petar/scripts/get_active_window.sh 2>/dev/null)
-DIR="$HOME/Pictures/Screenshots/${CLASS_NAME}/$(date +"%Y")/$(date +"%m")"
+# ---- Inline window class detection (X11) ----
+ACTIVE_WIN=$(xdotool getactivewindow 2>/dev/null) || ACTIVE_WIN=""
+CLASS_NAME=""
+if [[ -n $ACTIVE_WIN ]]; then
+    CLASS_NAME=$(xdotool getwindowclassname "$ACTIVE_WIN" 2>/dev/null || true)
+    # Lowercase
+    CLASS_NAME=$(echo "$CLASS_NAME" | tr '[:upper:]' '[:lower:]')
+fi
+# ---- end class detection ----
+DIR="$HOME/Pictures/Screenshots/${CLASS_NAME}/$(date +%Y/%m)"
 mkdir -p "$DIR"
 
-# Generate filename components
-TIMESTAMP=$(date +"%d %H %M %S %N")
-DAY=$(echo "$TIMESTAMP" | awk '{print $1}')
-HOUR=$(echo "$TIMESTAMP" | awk '{print $2}')
-MINUTE=$(echo "$TIMESTAMP" | awk '{print $3}')
-SECOND=$(echo "$TIMESTAMP" | awk '{print $4}')
-MILLISECONDS=$(echo "$TIMESTAMP" | awk '{print $5}' | cut -b1-3)
+read -r DAY HOUR MINUTE SECOND NANOSEC <<< "$(date +'%d %H %M %S %N')"
+MS="${NANOSEC:0:3}"
 
-# Create filename and path
-FILENAME="${DAY}d;${HOUR}h;${MINUTE}m;${SECOND}s;${MILLISECONDS}ms"
+FILENAME="${DAY}d;${HOUR}h;${MINUTE}m;${SECOND}s;${MS}ms"
 FULL_PATH="${DIR}/${FILENAME}.png"
-FULL_PATH_NO_ANNOTATIONS="${DIR}/${FILENAME}_no_annotations.png"
+FULL_PATH_TMP="${DIR}/${FILENAME}_no_annotations.png"
 
-# Detect session type
-if [[ -n $WAYLAND_DISPLAY ]]; then
-    SESSION="wayland"
-elif [[ -n $DISPLAY ]]; then
-    SESSION="x11"
-else
-    echo "Could not detect session type"
-    exit 1
-fi
+# ---- Capture full screen (X11) ----
+flameshot screen --raw > "$FULL_PATH_TMP"
 
-# Check if we're in KDE
-if [[ $XDG_CURRENT_DESKTOP == *"KDE"* ]] || [[ $XDG_SESSION_DESKTOP == "plasma" ]]; then
-    KDE=true
-else
-    KDE=false
-fi
-
-SPECTACLEFLAG=f
-if [[ "$MODE" == "area" ]] || [[ "$MODE" == "screen" ]]; then
-	SPECTACLEFLAG=m
-fi
-
-# Take screenshot - ALWAYS capture full screen
-if [[ $SESSION == "x11" ]]; then
-    flameshot screen --raw > "$FULL_PATH_NO_ANNOTATIONS"
-else
-    # Wayland
-    if [[ $KDE == true ]]; then
-        # KDE Wayland - full screen capture
-        spectacle -b -$SPECTACLEFLAG -n -o "$FULL_PATH_NO_ANNOTATIONS"
-    else
-        # Non-KDE Wayland (wlroots), not tested
-        grim "$FULL_PATH_NO_ANNOTATIONS"
-    fi
-fi
-
-# Then process based on mode
-if [[ -f "$FULL_PATH_NO_ANNOTATIONS" ]]; then
+# ---- Mode‑based processing ----
+if [[ -f "$FULL_PATH_TMP" ]]; then
     case "$MODE" in
-        "fullscreen"|"screen")
-            # Just copy/rename the file
-            mv "$FULL_PATH_NO_ANNOTATIONS" "$FULL_PATH"
+        fullscreen|screen)
+            mv "$FULL_PATH_TMP" "$FULL_PATH"
             ;;
-        "area"|"fullarea")
-            # Open in satty for cropping
-            satty -f "$FULL_PATH_NO_ANNOTATIONS" -o "$FULL_PATH" --fullscreen \
+        area|fullarea)
+            satty -f "$FULL_PATH_TMP" -o "$FULL_PATH" --fullscreen \
                 --save-after-copy \
                 --actions-on-enter "save-to-file,exit" \
                 --actions-on-right-click "exit" \
@@ -101,33 +50,26 @@ if [[ -f "$FULL_PATH_NO_ANNOTATIONS" ]]; then
                 --initial-tool "crop"
             ;;
     esac
-    
-    # Clean up temp file if final screenshot is empty
+
     if [[ ! -s "$FULL_PATH" ]]; then
-        rm "$FULL_PATH_NO_ANNOTATIONS"
+        rm -f "$FULL_PATH_TMP"
     fi
 fi
 
-# Check if screenshot was captured
-if [[ ! -s "$FULL_PATH" ]]; then
+[[ -s "$FULL_PATH" ]] || exit 0
+
+# ---- Clipboard (X11) ----
+if command -v xclip &>/dev/null; then
+    xclip -selection clipboard -t image/png "$FULL_PATH"
+else
+    notify-send "Error" "xclip not found"
     exit 0
 fi
 
-# Copy image to clipboard
-if [[ $SESSION == "wayland" ]] && command -v wl-copy &>/dev/null; then
-    wl-copy < "$FULL_PATH"
-elif [[ $SESSION == "x11" ]] && command -v xclip &>/dev/null; then
-    xclip -selection clipboard -t image/png "$FULL_PATH"
-else
-	notify-send "Error" "Failed to copy to clipboard"
-  	exit 0
-fi
-
-# Send notification
 notify-send "Screenshot captured" "Image copied to clipboard" -i "$FULL_PATH"
 
-# Optimize with oxipng
-oxipng -o max "$FULL_PATH"
-if [[ -s "$FULL_PATH_NO_ANNOTATIONS" ]]; then
-	oxipng -o max "$FULL_PATH_NO_ANNOTATIONS"
+# ---- Background optimisation ----
+if command -v oxipng &>/dev/null; then
+    oxipng -o max "$FULL_PATH" &
+    [[ -s "$FULL_PATH_TMP" ]] && oxipng -o max "$FULL_PATH_TMP" &
 fi
