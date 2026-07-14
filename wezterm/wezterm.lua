@@ -124,7 +124,7 @@ config.window_padding = {
 config.initial_cols = 180                               -- Initial Width
 config.initial_rows = 50                                -- Initial Height
 config.window_background_opacity = 0.75                 -- Opacity of BG
-config.kde_window_background_blur = true                -- Blur on KDE only, see wezterm wiki for others
+config.wayland_window_background_blur = true                -- Blur on KDE only, see wezterm wiki for others
 --window_decorations = "INTEGRATED_BUTTONS|RESIZE"
 config.warn_about_missing_glyphs = false                -- Don't send notifs when missing glyphs
 
