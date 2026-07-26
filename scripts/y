@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Defaults
+ignorefail=false
+do_cache=false
+do_reboot=false
+do_shutdown=false
+
+show_help() {
+    cat <<EOF
+Usage: ${0##*/} [OPTIONS]
+
+Always runs:
+  yay --noconfirm --repo && yay --noconfirm --aur
+
+Options:
+  -c, --cache       Clean package cache (paccache -r && yay --noconfirm -Scc)
+  -r, --reboot      Reboot system after updates
+  -s, --shutdown    Shutdown system after updates
+  -i, --ignorefail  Ignore upgrade failures and still attempt reboot/shutdown
+  -h, --help        Show this help message and exit
+
+Notes:
+  - By default, reboot/shutdown only run if upgrade succeeds.
+  - With --ignorefail, reboot/shutdown run even if upgrade fails.
+  - If both --reboot and --shutdown are specified, both commands will be attempted.
+  - The script will close the terminal when finished.
+EOF
+}
+
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -c|--cache)      do_cache=true; shift ;;
+        -r|--reboot)     do_reboot=true; shift ;;
+        -s|--shutdown)   do_shutdown=true; shift ;;
+        -I|--ignorefail) ignorefail=true; shift ;;
+        -h|--help)       show_help; exit 0 ;;
+        -*)              echo "Unknown option: $1" >&2; exit 1 ;;
+        *)               break ;;
+    esac
+done
+
+# Track upgrade status
+upgrade_ok=true
+
+# AUR blocked by ISP
+#sudo systemctl start wg-quick@wgcf-profile.service
+
+#sleep 30
+
+# === Wait for active internet connection ===
+until nm-online -q; do
+    echo "Waiting for internet connection..."
+    sleep 2
+done
+
+#while ! ping -c 1 aur.archlinux.org &> /dev/null; do
+#    echo "Waiting for aur.archlinux.org to be reachable..."
+#    sleep 5
+#done
+#echo "aur.archlinux.org is now reachable! Continuing..."
+
+# Always run updates
+upgrade_ok=false
+yay -Syu --noconfirm && upgrade_ok=true
+
+if command -v flatpak >/dev/null; then
+	flatpak update -y
+fi
+
+# Cache clean if requested (only if upgrades ran successfully)
+if $do_cache && $upgrade_ok; then
+    sudo paccache -r && yay --noconfirm -Scc
+fi
+
+# Disable wgcf
+#sudo systemctl stop wg-quick@wgcf-profile.service
+
+echo
+$upgrade_ok && echo Upgrade was successful || echo Upgrade failed.
+
+# Run reboot/shutdown only if allowed
+if $do_reboot; then
+    if $upgrade_ok || $ignorefail; then
+        sudo systemctl reboot -i
+    fi
+fi
+
+if $do_shutdown; then
+    if $upgrade_ok || $ignorefail; then
+        sudo systemctl poweroff -i
+    fi
+fi
+
+# Exit terminal session
+exit
