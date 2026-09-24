@@ -36,7 +36,7 @@ while [[ $# -gt 0 ]]; do
         -c|--cache)      do_cache=true; shift ;;
         -r|--reboot)     do_reboot=true; shift ;;
         -s|--shutdown)   do_shutdown=true; shift ;;
-        -I|--ignorefail) ignorefail=true; shift ;;
+        -i|--ignorefail) ignorefail=true; shift ;;
         -h|--help)       show_help; exit 0 ;;
         -*)              echo "Unknown option: $1" >&2; exit 1 ;;
         *)               break ;;

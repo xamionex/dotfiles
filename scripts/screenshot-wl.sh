@@ -96,7 +96,7 @@ debug_end "$T_STEP_START" "post-processing (includes Satty if area)"
 T_STEP_START=$(debug_start)
 if command -v wl-copy >/dev/null; then
     wl-copy < "$FULL_PATH"
-    notify-send "Screenshot captured" "Image copied to clipboard" -i "$FULL_PATH"
+    #notify-send "Screenshot captured" "Image copied to clipboard" -i "$FULL_PATH"
 fi
 debug_end "$T_STEP_START" "clipboard+notify"
 
