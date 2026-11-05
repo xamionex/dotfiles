@@ -13,10 +13,10 @@ show_help() {
 Usage: ${0##*/} [OPTIONS]
 
 Always runs:
-  yay --noconfirm --repo && yay --noconfirm --aur
+  paru --noconfirm -Syu
 
 Options:
-  -c, --cache       Clean package cache (paccache -r && yay --noconfirm -Scc)
+  -c, --cache       Clean package cache (paccache -r && paru --noconfirm -Scc)
   -r, --reboot      Reboot system after updates
   -s, --shutdown    Shutdown system after updates
   -i, --ignorefail  Ignore upgrade failures and still attempt reboot/shutdown
@@ -65,7 +65,7 @@ done
 
 # Always run updates
 upgrade_ok=false
-yay -Syu --noconfirm && upgrade_ok=true
+paru --noconfirm -Syu && upgrade_ok=true
 
 if command -v flatpak >/dev/null; then
 	flatpak update -y
@@ -73,7 +73,7 @@ fi
 
 # Cache clean if requested (only if upgrades ran successfully)
 if $do_cache && $upgrade_ok; then
-    sudo paccache -r && yay --noconfirm -Scc
+    sudo paccache -r && paru --noconfirm -Scc
 fi
 
 # Disable wgcf
