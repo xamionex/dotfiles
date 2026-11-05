@@ -228,7 +228,7 @@ start() {
         -bm qp \
         -q "$STREAM_QUALITY" \
         -cr limited \
-        -a "app-inverse:TeamSpeak|app-inverse:discord|app-inverse:Zen|app-inverse:chromium|app-inverse:firefox|app-inverse:plasmashell|app-inverse:pipewire|app-inverse:linuxsoundboard.local_playback|app-inverse:linuxsoundboard.virtual_mic_feeder" \
+        -a "app-inverse:TeamSpeak|app-inverse:discord|app-inverse:plasmashell|app-inverse:pipewire|app-inverse:linuxsoundboard.local_playback|app-inverse:linuxsoundboard.virtual_mic_feeder" \
         -o "$WHIP_URL" \
         -v no > "$LOG_FILE" 2>&1 &
 
